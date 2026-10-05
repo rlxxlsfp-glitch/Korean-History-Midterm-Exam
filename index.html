@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="한국사">
+<title>한국사</title>
+<meta name="theme-color" content="#1F2D4D">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1F2D4D; --ink2:#4A5675; --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE1E9;
+  --hy:#FFE57A; --hp:#FFCADB; --note:#2E7A4B; --ok:#2E7A4B; --bad:#C0392B; --soft:#EAEFF7;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E6EBF5; --ink2:#AAB4C8; --paper:#141A26; --card:#1D2535; --line:#33405A;
+    --hy:#7A6A1E; --hp:#7A3550; --note:#7FD19B; --ok:#7FD19B; --bad:#FF8A7A; --soft:#243049;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.7;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 80px}
+header{padding:28px 0 12px}
+header h1{font-family:"Gowun Batang",serif;font-size:44px;line-height:1;margin:0;letter-spacing:-1px}
+header p{margin:8px 0 0;color:var(--ink2);font-size:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);display:flex;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+nav button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:500;padding:9px 0;border-radius:10px;cursor:pointer}
+nav button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #6B8CFF;outline-offset:2px}
+.hidden{display:none!important}
+
+/* 개념 */
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--ink2);margin:14px 0 8px}
+.tools{display:flex;gap:8px;margin:6px 0 14px}
+.tools button{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.tools button.on{background:var(--hy);border-color:transparent;color:#1F2D4D}
+b.ans{background:var(--hy);padding:0 4px;border-radius:3px;font-weight:700}
+.hideans b.ans{color:transparent;background:repeating-linear-gradient(-45deg,var(--hy),var(--hy) 6px,transparent 6px,transparent 9px);cursor:pointer;min-width:3em;display:inline-block;line-height:1.3}
+.hideans b.ans.show{color:inherit;background:var(--hy)}
+mark{background:var(--hp);color:inherit;padding:0 2px;border-radius:2px}
+u{text-decoration-color:#E0546E;text-decoration-thickness:2px;text-underline-offset:3px}
+.n::before{content:" ("}
+.n::after{content:")"}
+details.unit{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;overflow:hidden}
+details.unit summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:baseline;gap:10px}
+details.unit summary::-webkit-details-marker{display:none}
+summary .no{font-family:"Gowun Batang",serif;font-weight:700;font-size:22px;color:var(--ink2);min-width:30px}
+summary .tt{font-weight:700;font-size:17px;flex:1}
+summary .pg{font-size:12px;color:var(--ink2)}
+details.unit[open] summary{border-bottom:1px solid var(--line)}
+.body{padding:6px 16px 16px}
+.body h3{font-size:15.5px;margin:18px 0 6px;padding-left:10px;border-left:4px solid var(--ink)}
+.body ul{margin:4px 0;padding-left:20px}
+.body li{margin:3px 0}
+.flow{background:var(--soft);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin:8px 0}
+.tbl th,.tbl td{border:1px solid var(--line);padding:7px 8px;vertical-align:top;text-align:left}
+.tbl th{background:var(--soft);white-space:nowrap;font-weight:700}
+.scroll{overflow-x:auto}
+.src{border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--ink2);margin:8px 0}
+.src strong{color:var(--ink)}
+
+/* 문제 */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.panel h2{font-size:17px;margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.chips button{border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.chips button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lab{font-size:13px;color:var(--ink2);margin:0 0 6px;font-weight:500}
+.big{width:100%;border:none;background:var(--ink);color:var(--paper);font:inherit;font-weight:700;font-size:17px;padding:14px;border-radius:12px;cursor:pointer}
+.big.sub{background:var(--soft);color:var(--ink)}
+.cnt{font-size:14px;color:var(--ink2);margin:0 0 12px}
+.prog{height:6px;background:var(--soft);border-radius:3px;overflow:hidden;margin:12px 0 4px}
+.prog i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2)}
+.lv{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-right:6px}
+.lv1{background:#DFF2E5;color:#22663B}.lv2{background:#FFF0C9;color:#7A5A00}.lv3{background:#FFD9D9;color:#9B2222}
+.qtext{font-size:17px;font-weight:500;margin:10px 0 12px;white-space:pre-line}
+.data{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;margin:0 0 12px;background:var(--paper);white-space:pre-line}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts button{text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;padding:11px 12px;border-radius:10px;cursor:pointer;line-height:1.5}
+.opts.ox{flex-direction:row}
+.opts.ox button{flex:1;text-align:center;font-size:26px;font-weight:700;padding:14px}
+.opts button.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--card))}
+.opts button.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
+.opts button:disabled{cursor:default}
+.blank{display:flex;gap:8px}
+.blank input{flex:1;min-width:0;font:inherit;font-size:17px;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.blank button{border:none;background:var(--ink);color:var(--paper);font:inherit;font-weight:700;padding:0 18px;border-radius:10px;cursor:pointer}
+.fb{margin:14px 0 0;padding:12px;border-radius:10px;background:var(--soft);font-size:15px}
+.fb .r{font-weight:700;font-size:16px}
+.fb .r.ok{color:var(--ok)}.fb .r.no{color:var(--bad)}
+.next{margin-top:12px}
+.score{font-family:"Gowun Batang",serif;font-size:52px;font-weight:700;line-height:1;margin:6px 0}
+.wlist{margin:10px 0 0;padding:0;list-style:none}
+.wlist li{border-top:1px solid var(--line);padding:10px 0;font-size:14.5px}
+.wlist .a{color:var(--ok);font-weight:700}
+.row{display:flex;gap:8px;margin-top:12px}
+.row .big{flex:1}
+.empty{color:var(--ink2);text-align:center;padding:24px 0}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>한국사</h1>
+  <p>Ⅰ. 일제 식민 통치와 민족 운동 · 배움책 2~11쪽</p>
+</header>
+<nav>
+  <button class="on" data-tab="concept">개념 정리</button>
+  <button data-tab="quiz">문제 풀기</button>
+  <button data-tab="wrong">오답 노트</button>
+</nav>
+
+<!-- ================= 개념 정리 ================= -->
+<section id="concept">
+  <div class="legend">
+    <span><b class="ans" style="font-weight:700">빈칸</b> 빈칸 정답</span>
+    <span><mark>형광펜</mark></span>
+    <span><u>밑줄</u></span>
+  </div>
+  <div class="tools"><button id="hideBtn">빈칸 가리기</button></div>
+
+  <div class="flow" style="margin-bottom:14px">
+    <strong>일제 강점기 통치 방식 한눈에</strong>
+    <div class="scroll"><table class="tbl" style="margin-top:6px">
+      <tr><th>시기</th><th>통치</th><th>경제 정책</th></tr>
+      <tr><td>1910년대</td><td>무단 통치 <span class="n">헌병, 강압</span></td><td>토지 조사 사업, 회사령 공포</td></tr>
+      <tr><td>1920년대</td><td>문화 통치(문화 정치)</td><td>산미 증식 계획, 회사령 폐지, 관세 폐지, 신은행령</td></tr>
+      <tr><td>1930년대~</td><td>민족 말살 통치 <span class="n">민족 정체성 없애기 예) 언어, 창씨개명</span></td><td>병참 기지화, 국가 총동원법, 전시 수탈</td></tr>
+    </table></div>
+  </div>
+
+  <details class="unit" open>
+    <summary><span class="no">01</span><span class="tt">일제가 무단 통치를 실시하다</span><span class="pg">8p</span></summary>
+    <div class="body">
+      <h3>제1차 세계 대전과 러시아 혁명</h3>
+      <ul>
+        <li><strong>제1차 세계 대전</strong>: 1914년 동맹국과 협상국 사이에서 발발, 일본은 <strong>협상국</strong> 측으로 참전 → 미국의 참전에 힘입어 협상국 승리(1918)</li>
+        <li>영향: 유럽 각국의 세력 약화, 국제 사회에서 <strong>미국과 일본</strong>의 영향력 강화</li>
+        <li><strong>러시아 혁명</strong>: 러시아 연이은 패배 → 노동자·군인이 제정을 무너뜨림(1917) → 레닌 등 혁명 정부 수립 → 국제 공산당 조직 <b class="ans">코민테른</b> 결성(1919)</li>
+        <li>결과: 소비에트 사회주의 공화국 연방(= <b class="ans">소련</b>) 수립(1922)</li>
+      </ul>
+      <h3>일제의 식민 통치 제도</h3>
+      <ul>
+        <li><mark>조선 총독부</mark>: 일제가 <mark>식민 통치의 최고 기구</mark>로 설치(1910)</li>
+        <li>조선 총독은 현역 육해군 <b class="ans">대장</b> 중 임명 — 일왕에 직속, 일본 의회·내각의 통제 X, <strong>행정권·입법권·사법권 및 군 통수권</strong> 행사</li>
+        <li><b class="ans">중추원</b>: 한국인을 정치에 참여시킨다는 명분으로 설치 → 실제로는 조선 총독부의 <mark>자문 역할, 친일파 인물</mark>로 구성</li>
+      </ul>
+      <h3><mark style="background:var(--hy)">무단 통치</mark></h3>
+      <div class="scroll"><table class="tbl">
+        <tr><th><b class="ans">헌병</b> 경찰제<br><span class="n">군인(감시·통제·처벌)</span></th><td>전국에 경찰 관서와 헌병 기관 설치, 헌병이 경찰·치안·<strong>일반 행정 업무</strong>까지 담당, 각 도의 헌병 대장이 지방 경찰권 장악</td></tr>
+        <tr><th>한국인<br>통제 법령</th><td>
+          • <b class="ans">범죄 즉결례</b>(1912): 헌병 경찰이 일부 범죄를 <mark>즉결 심판할 수 있음</mark><br>
+          • <b class="ans">조선 태형령</b>(1912): <mark>한국인에게만 태형 적용</mark> <span class="n">매질하는 것(볼기 치기)</span><br>
+          • <mark>경찰범 처벌 규칙</mark>(1912): 다양한 경범죄 규정 → <mark>한국인의 일상생활까지 통제</mark></td></tr>
+        <tr><th>사회 통제</th><td>
+          • 일반 관리·학교 교원이 <b class="ans">제복</b>과 <b class="ans">칼</b> 착용 <span class="n">위압, 공포감 조성</span><br>
+          • 언론·출판·집회·결사<span class="n">모임, 단체 조직</span>의 <mark>자유 박탈</mark>(기본권 제한)<br>
+          • 주로 보통 교육·실업 교육(<mark>고등 교육의 기회 제한</mark>), 보통학교 수업 연한 <b class="ans">4</b>년</td></tr>
+      </table></div>
+      <div class="src"><strong>보충 — 태형 사례(매일신보)</strong><br>청소 상태가 나쁘다는 이유, 공용 우물물을 마음대로 떠 먹었다는 이유 등 사소한 일로도 태형을 맞음 → 헌병 경찰의 인권 침해<br><strong>범죄 즉결례 제1조</strong>: 경찰서장(또는 그 직무 취급자)이 관할 구역 안의 범죄를 즉결할 수 있음</div>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">02</span><span class="tt">기만적인 '문화 정치'를 실시하다</span><span class="pg">11p</span></summary>
+    <div class="body">
+      <h3>'문화 정치'로의 전환</h3>
+      <ul>
+        <li>배경: <b class="ans">3·1 운동</b>을 계기로 일제가 무단 통치의 한계를 인식</li>
+        <li>명분: 한국인의 문화와 관습을 존중한다고 표방 → 목적: 식민 지배에 대한 <mark>한국인의 저항을 무마</mark></li>
+      </ul>
+      <h3>'문화 정치'의 내용 vs 실상</h3>
+      <div class="scroll"><table class="tbl">
+        <tr><th></th><th>내용(주장)</th><th>실상</th></tr>
+        <tr><th>총독 임명</th><td>현역 육해군 대장뿐 아니라 <b class="ans">문관</b>도 총독 임명 가능</td><td>식민 통치가 끝날 때까지 임명된 문관 총독 = <b class="ans">0</b>명</td></tr>
+        <tr><th>제도 변화</th><td>헌병 경찰제 → <b class="ans">보통 경찰제</b><br>태형 제도 폐지, 관리·교원 제복 착용 폐지</td><td><mark>경찰 제도 확대</mark>(경찰 관서·인원·비용 3배 이상 증가), 1군 1경찰서·1면 1주재소 체제<br><b class="ans">치안 유지법</b> 시행(1925) <span class="n">사회주의자 제압 → 독립운동가 제압</span></td></tr>
+        <tr><th>통제 완화</th><td>언론·출판·집회·결사의 자유를 <mark>제한적으로 허용</mark> → <mark>조선일보·동아일보</mark> 발간, 사회 운동 단체 결성</td><td>한국인 신문에 대한 <b class="ans">검열</b> 강화(기사 삭제, 압수·정간)</td></tr>
+        <tr><th>지방 제도</th><td>부·면 협의회를 <mark>민선 또는 관선</mark>으로 구성<br><b class="ans">도 평의회</b> 설치</td><td>지방 자치에 참여할 수 있는 <mark>한국인 수 제한</mark><br>도 평의회 의원 1/3은 도장관이 임명, 2/3는 부·면 협의회원이 선출 → <mark>의결권이 없는 자문 기구</mark></td></tr>
+        <tr><th>교육 정책</th><td>조선 교육령 개정 → 보통학교 교육 연한·학교 수 증가 <span class="n">4년 → 6년</span>, 대학 설립 가능</td><td>학교 수 부족, 비싼 학비 → <mark>한국인의 취학률 저조</mark></td></tr>
+      </table></div>
+      <h3>'문화 정치'의 성격</h3>
+      <ul><li><b class="ans">친일</b> 세력을 체계적으로 육성 + 더 강해진 경찰력으로 항일 운동 탄압 → 우리 <mark>민족을 분열</mark>시키려 함</li></ul>
+      <div class="src"><strong>보충</strong><br>• 1918년 → 1920년 사이 경찰 인원과 예산이 크게 늘어남 (1군 1경찰서, 1면 1주재소)<br>• 이완용 사망 후 그 행적을 비판한 사설이 실리자 일제가 삭제함(동아일보, 1926) → 검열</div>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">03</span><span class="tt">일제가 민족 말살 통치를 실시하다</span><span class="pg">14p</span></summary>
+    <div class="body">
+      <h3>일제의 침략 전쟁 확대</h3>
+      <ul>
+        <li>배경: <b class="ans">대공황</b>을 극복하려고 대륙 침략으로 경제권 확대 추진</li>
+      </ul>
+      <div class="flow">만주 사변(1931) → 중일 전쟁(1937) → 제2차 세계 대전 참전(독일·이탈리아와 군사 동맹) → <b class="ans">대동아 공영권</b> 결성 주장, 동남아시아로 침략 확대 → 미국이 철수 요구, 경제 제재</div>
+      <h3>세계 대전의 종결과 일본의 패망</h3>
+      <div class="flow">하와이 진주만 기습, 아시아·태평양 전쟁(1941) → 미국이 <b class="ans">미드웨이 해전</b>에서 승리 → 일본 본토 공격 → 원자 폭탄 투하, 소련의 대일전 참전 → 일본 무조건 항복(1945)</div>
+      <h3>국가 총동원 체제</h3>
+      <ul>
+        <li>배경: 중일 전쟁 발발 → <b class="ans">국가 총동원법</b> 제정(1938)</li>
+        <li>① <mark>국민 정신 총동원 조선 연맹</mark> 설치 → 말단 기구로 <b class="ans">애국반</b> 조직</li>
+        <li>② <mark>병력</mark> 강제 동원: <mark>지원병제(1938)</mark><span class="n">형식</span> · <mark>학도 지원병 제도(1943)</mark> · <mark>징병제(1944)</mark><span class="n">강제적</span></li>
+        <li>③ <mark>노동력</mark> 강제 동원: <mark>지역별 할당 모집·관청 알선·국민 징용령(1939)</mark> → 광산·비행장·군수 공장에 청장년 동원 / <b class="ans">여자 정신 근로령</b>(1944) → 군수 공장에 여성 동원 / 일본군 '<b class="ans">위안부</b>' 강제 동원 <span class="n">취업 사기, 납치…</span></li>
+      </ul>
+      <div class="src"><strong>국가 총동원법(1938)</strong><br>제1조 전시에 국방 목적 달성을 위해 <mark>인적 및 물적 자원을 운용</mark><br>제4조 전시에 필요하면 칙령에 따라 <mark>제국 신민을 징용</mark>하여 총동원 업무에 종사하게 할 수 있음</div>
+      <h3>민족 말살 통치</h3>
+      <div class="scroll"><table class="tbl">
+        <tr><th><u>황국 신민화</u> 정책</th><td><b class="ans">내선일체</b> 강조 <span class="n">일본·조선은 하나</span> → <mark>황국 신민 서사</mark> 암송, <mark>궁성 요배</mark> 강요 <span class="n">일왕 궁궐에 절</span>, <mark>신사 참배</mark> 강요, 일본식 성명 사용(<b class="ans">창씨개명</b>) 강요</td></tr>
+        <tr><th>교육령 개정</th><td>한국어 학습 시간 폐지, <mark>우리말 사용 금지</mark>, 일본어로 수업, 소학교를 <b class="ans">황국 신민 학교</b><span class="n">국민학교</span>로 개편(1941), 수신(도덕) 교과 강화</td></tr>
+        <tr><th>언론 통제</th><td><mark>한국어로 발간되던</mark> 동아일보, 조선일보 등 <mark>신문 폐간</mark>(1940)</td></tr>
+      </table></div>
+      <div class="src"><strong>보충 — 애국반 & 일본군 '위안부'</strong><br>• 애국반은 매달 반상회를 열어 일제 정책을 전달, 징병·징용 지원, 식량 배급에도 애국반장 확인이 필요 → 애국반 참여 강요<br>• 일본군 '위안부': 일본군 위안소에 강제 동원되어 '성노예' 생활을 강요당한 여성들, 국제적으로는 '군 성노예'라고 표현. 아직도 이를 부정하려는 움직임이 있음</div>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">04</span><span class="tt">일제가 토지 조사 사업을 실시하다</span><span class="pg">18p</span></summary>
+    <div class="body">
+      <h3><mark style="background:var(--hy)">토지 조사 사업</mark>(1910~1918)</h3>
+      <ul>
+        <li>명분: 근대적 토지 소유권 확립, 공정한 지세 부담</li>
+        <li>실질적 목적: 지세 수입을 늘려 재정 확보, 일본인의 한국 토지 투자 지원 → <mark>식민 지배의 경제적 기초 확립</mark></li>
+        <li>내용: 임시 토지 조사국 설치(1910), <b class="ans">토지 조사령</b> 공포(1912) → 정해진 기간 안에 토지 소유권자가 직접 <u>신고</u>해야 소유지 인정</li>
+        <li>결과: 황실 소유 토지가 조선 총독부 소유가 되거나 <b class="ans">동양 척식 주식회사</b>로 넘어감(일본인 이민자에게 싼값에 판매, 고율의 소작료), 소유자 확정 과정에서 분쟁 발생</li>
+      </ul>
+      <h3>영향</h3>
+      <ul>
+        <li>① 지주 경영 확대: <mark>지주의 소유권을 절대적 법적 권리로 인정</mark> → 일본인·일부 한국인이 대지주로 성장</li>
+        <li>② 총독부 수입 증가: 과세 대상 토지 증가 → <mark>조선 총독부의 지세 수입 증가</mark></li>
+        <li>③ 농민 처지 악화: 관습법적인 <b class="ans">경작권</b> 부정 → 땅을 잃은 농민은 지주와 계약, 고율의 <mark>소작료 부담</mark>(→ 1920년대 이후 소작 쟁의의 계기) → 화전민이 되거나 만주·연해주·일본 등지로 이주</li>
+      </ul>
+      <h3>일제의 산업 장악</h3>
+      <ul>
+        <li><b class="ans">회사령</b> 공포(1910) <span class="n">조선 산업 제한</span>: 회사 설립 시 조선 총독의 <mark>허가</mark> 필요 → 일본 기업이 전기·철도·금융 장악, 한국인 기업은 <mark>소규모의 제조업·매매업에 한정</mark></li>
+        <li><mark>어업령, 삼림령, 조선 광업령</mark>: 각종 자원 독점, 막대한 이익 획득</li>
+        <li>금융: 한국은행을 <mark>조선은행</mark>으로 고침, <b class="ans">조선 식산 은행</b> 설립(1918) → 금융·산업 지배 강화</li>
+        <li>기간 시설: 주요 도시와 항구를 잇는 <b class="ans">철도망</b>, 도로, 항만 → 한국 상품의 일본 이출, 일본 상품의 한국 판매에 이용</li>
+      </ul>
+      <div class="src"><strong>자료 해석</strong><br>토지 조사 사업 이후 총독부가 거둔 토지세가 늘어났고, 일본인 지주의 수·소유 면적·투자액도 크게 늘어남</div>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">05</span><span class="tt">일제가 산미 증식 계획을 추진하다</span><span class="pg">21p</span></summary>
+    <div class="body">
+      <h3><mark style="background:var(--hy)">산미 증식 계획</mark>(1920~1934)</h3>
+      <ul>
+        <li>배경: 일본의 공업화 → 일본의 농업 생산력 부족 → <u>부족한 쌀을 한국에서 확보</u>해 일본의 식량 문제 해결</li>
+        <li>내용: 다수확 품종으로 개량, 비료 사용 확대, 농토 개간, <strong>밭을 논으로</strong> 전환, 전국에 <b class="ans">수리 조합</b> 조직(저수지·제방 설치) → 지주들이 건설비·조합비를 소작농에게 떠넘김 → 농민 반대 운동</li>
+        <li>결과: 목표만큼 생산량이 늘지 않았지만 <mark>일본으로의 쌀 이출량은 매년 증가</mark>, <mark>토지 회사·지주</mark>는 <mark>부 축적</mark>, 농민은 소작료·종자 개량비·비료 대금·수리 조합비를 떠안아 생활 악화</li>
+      </ul>
+      <div class="src"><strong>자료</strong><br>• 쌀 생산량은 크게 늘지 않았지만 일본 이출량은 꾸준히 증가 → 한국인 식량 사정 악화 <span class="n">우리나라를 위한 것 X</span><br>• 동아일보(1930): 수확은 많아도 소작료·수리 조합비·비료 대금을 한꺼번에 내야 하고 쌀값까지 떨어져 빚 독촉에 수확을 전부 채권자에게 넘김</div>
+      <h3>일제 자본의 지배 강화</h3>
+      <ul>
+        <li><b class="ans">회사령</b> 폐지(1920)
+          <ul>
+            <li>목적: 제1차 세계 대전 때 잉여 자본을 쌓은 일본 기업의 한국 진출·투자 지원</li>
+            <li>내용: 회사 설립을 허가제에서 <b class="ans">신고제</b>로 바꿈</li>
+            <li>결과: 일본 대기업이 본격 진출(주로 지하자원이 풍부한 <strong>북부</strong>에 공장)</li>
+            <li>영향: 한국인 기업은 유통·제조업의 소규모 회사 → <mark>한일 회사 간 자본금과 생산액에서 큰 차이</mark> / 일본인은 기술 숙련직, 한국인은 단순 노무직 → <mark>한일 노동자 간 임금 차이</mark>(한국인이 더 적은 임금, 장시간 노동) / 한국인 여성·미성년 노동자의 <mark>노동 환경</mark> 더욱 열악</li>
+          </ul></li>
+        <li>상품: 한일 간 <b class="ans">관세</b> 폐지(1923) → <mark>일본 상품</mark>의 가격 경쟁력 강화</li>
+        <li>자본: <b class="ans">신은행령</b> 발표(1928) → 은행 합병 추진, <mark>일본 자본의 지배 강화</mark></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">06</span><span class="tt">일제가 한국에서 전쟁 물자를 수탈하다</span><span class="pg">23p</span></summary>
+    <div class="body">
+      <h3>일제의 대륙 침략과 <mark style="background:var(--hy)">병참 기지화</mark> 정책</h3>
+      <ul>
+        <li>배경: <b class="ans">대공황</b>의 여파로 경제 위기 → 일본·한국·만주를 잇는 경제 블록 조성</li>
+        <li>전개: <b class="ans">조선 공업화</b> 정책(만주 = 농업·원료, 한국 = 기초 공업, 일본 = 정밀 공업 지대), <b class="ans">남면북양</b> 정책 <span class="n">면화 ~ 양</span></li>
+      </ul>
+      <div class="scroll"><table class="tbl">
+        <tr><th colspan="2"><b class="ans">병참 기지화</b> 정책 <span class="n">전쟁</span></th></tr>
+        <tr><th>배경</th><td>중일 전쟁 이후 한국을 대륙 침략에 필요한 <mark>물자·인력 공급처</mark>로 삼으려 함</td></tr>
+        <tr><th>내용</th><td>일본 대기업이 한반도 <strong>북부</strong>에 <mark>발전소</mark> 건설, 군수 산업 관련 <mark>중화학 공업</mark>(화학·금속·기계)에 투자</td></tr>
+        <tr><th>영향</th><td>지역별로 다른 공업 구조(<u>서울·경기 = 소비재</u>, <u>황해도·평안도·함경도 = 중화학</u>), <mark>산업별 불균형 심화</mark></td></tr>
+      </table></div>
+      <h3>농촌의 상황</h3>
+      <ul>
+        <li>배경: 대공황으로 농촌 경제 악화, 농민 운동 확산</li>
+        <li><b class="ans">농촌 진흥 운동</b> 실시(1932~) <span class="n">통제</span>: <mark>농민 개인의 책임과 정신력만 강조</mark>, 실질적 문제는 해결 못함</li>
+        <li><b class="ans">조선 농지령</b>(1934): 지주의 자의적인 소작권 이동을 막음, 소작 기간 3~7년 → 소작농 관리자의 횡포를 통제 못함, <mark>지주 권리 옹호, 높은 소작료 유지</mark></li>
+      </ul>
+      <div class="src"><strong>조선 농지령</strong><br>제7조 소작지 임대차 기간은 3년 이상(영년작물은 7년 이상)<br>제19조 지주는 소작농이 배신행위를 하지 않는 한 갱신을 거절할 수 없음(단, 정당한 사유가 있으면 제외)</div>
+      <h3>침략 전쟁 확대와 전시 물자 수탈</h3>
+      <ul>
+        <li><b class="ans">국가 총동원법</b> 제정(1938) → 인적·물적 자원 수탈 본격화</li>
+        <li>중요 산업 통제법 → 지하자원 개발, 가공 공업 등 주요 업종 통제</li>
+        <li><mark>지하자원 약탈</mark>, 새로운 <mark>세금</mark> 징수, 위문 <mark>금품 모금</mark>, <mark>국방헌금</mark><span class="n">기부금</span> 강요</li>
+        <li><mark>공출 제도</mark>: 무기의 재료가 되는 금속 제품 수탈</li>
+        <li><b class="ans">미곡 공출 제도</b> 실시, <mark>산미 증식 계획</mark> 재개, <mark>식량 배급제</mark> <span class="n">정해진 양만큼 줌(배급)</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="unit">
+    <summary><span class="no">07</span><span class="tt">국외로 이주한 동포들의 삶</span><span class="pg">26p</span></summary>
+    <div class="body">
+      <h3>만주 개척</h3>
+      <ul>
+        <li>수탈을 피하고 농토를 얻으려 이동 → 황무지 개간, 한인 사회 형성, 만주 독립운동 세력 지원</li>
+        <li>1920년대 간도 참변, <u>미쓰야 협정</u> <span class="n">독립운동가 체포</span> 등 탄압 → 1932년 <b class="ans">만주국</b> 수립 후 만주 개척을 위해 한국인 강제 이주</li>
+        <li>1952년 중국 공민 자격 획득, 옌볜 조선족 자치구 지정</li>
+      </ul>
+      <h3>일본 — 관동 대지진과 강제 동원</h3>
+      <ul>
+        <li>1차 대전 후 일본 기업의 노동력 필요 → 생활고를 겪던 젊은이들의 <mark>일본 진출</mark> → <mark>주요 공업 도시에서 힘든 생활</mark></li>
+        <li>1923년 <b class="ans">관동 대지진</b> 때 일본인에게 많은 한국인이 희생 → 1930년대 이후 <mark>강제 동원으로 끌려간 한국인 증가</mark> → 광복 후에도 남아 <mark>재일 동포 사회</mark> 형성</li>
+      </ul>
+      <h3>연해주 — 강제 이주</h3>
+      <ul>
+        <li>국권 피탈 이후 민족 운동가들이 이주 → <mark>한인촌</mark> 형성, <mark>독립운동 단체 조직</mark></li>
+        <li>중일 전쟁 직후 소련이 한국인을 <mark>중앙아시아로 강제 이주</mark>, 많은 희생 → 이주 후에도 각종 노동 → 정착 한국인을 <mark>카레이스키</mark>, 후손을 <b class="ans">고려인</b>이라 함</li>
+      </ul>
+      <h3>미주 한인 활동</h3>
+      <ul>
+        <li>1902년 하와이 사탕수수 <u>농장 노동자 파견</u>으로 시작 → 미국 서부로 다시 이주, 독립 지원</li>
+        <li><u>대한인 국민회 조직(1910)</u>, 독립운동 후원, 임시 정부 지원 → <u>재미 한족 연합 위원회 결성(1941</u>, 외교 독립 활동)</li>
+        <li>재미 한족 연합 위원회는 캘리포니아주의 인가를 받아 한인 국방 경위대(맹호군) 조직 → 대일 항전 의지 과시</li>
+        <li>광복 이후 주한 미군 배우자의 이주 증가, 입양·유학 활발</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 문제 풀기 ================= -->
+<section id="quiz" class="hidden">
+  <div id="setup" class="panel">
+    <h2>문제 고르기</h2>
+    <p class="lab">난이도</p>
+    <div class="chips" id="lvChips"></div>
+    <p class="lab">단원</p>
+    <div class="chips" id="secChips"></div>
+    <p class="lab">문항 수</p>
+    <div class="chips" id="numChips"></div>
+    <p class="cnt" id="avail"></p>
+    <button class="big" id="startBtn">풀기 시작</button>
+  </div>
+  <div id="play" class="panel hidden"></div>
+</section>
+
+<!-- ================= 오답 노트 ================= -->
+<section id="wrong" class="hidden">
+  <div class="panel" id="wrongPanel"></div>
+</section>
+</div>
+
+<script>
+const SEC=["","무단 통치","문화 정치","민족 말살 통치","토지 조사·산업 장악","산미 증식·자본 지배","병참 기지화·전시 수탈","국외 이주 동포"];
+const LV={1:"하",2:"중",3:"상"};
+/* t: ox(a:true/false) | bl(a:[정답들]) | mc(o[0]이 정답, 보기 순서는 섞임) ; d:자료 */
+const Q=[
+/* ---------- 하 : 01 ---------- */
+{l:1,s:1,t:"bl",q:"레닌은 1919년 국제 공산당 조직인 (     )을/를 결성하였다.",a:["코민테른"],e:"러시아 혁명 → 레닌 등 혁명 정부 수립 → 코민테른 결성(1919)."},
+{l:1,s:1,t:"bl",q:"1922년 수립된 소비에트 사회주의 공화국 연방을 줄여서 (     )이라고 한다.",a:["소련"],e:"소련 수립(1922)."},
+{l:1,s:1,t:"ox",q:"일본은 제1차 세계 대전에 동맹국 측으로 참전하였다.",a:false,e:"일본은 협상국 측으로 참전했고, 미국 참전에 힘입어 협상국이 승리(1918)했어."},
+{l:1,s:1,t:"ox",q:"제1차 세계 대전 이후 국제 사회에서 미국과 일본의 영향력이 강해졌다.",a:true,e:"유럽 각국 세력은 약해지고 미국·일본의 영향력이 강화됐어."},
+{l:1,s:1,t:"bl",q:"일제가 1910년 설치한 식민 통치의 최고 기구는 (     )이다.",a:["조선총독부","총독부"],e:"조선 총독부 = 식민 통치의 최고 기구(1910)."},
+{l:1,s:1,t:"ox",q:"조선 총독은 일왕에 직속되어 일본 의회·내각의 통제를 받지 않았다.",a:true,e:"행정권·입법권·사법권에 군 통수권까지 행사했어."},
+{l:1,s:1,t:"bl",q:"조선 총독은 현역 육해군 (     ) 중에서 임명되었다.",a:["대장"],e:"1910년대에는 현역 육해군 대장만 총독이 될 수 있었어."},
+{l:1,s:1,t:"bl",q:"한국인을 정치에 참여시킨다는 명분으로 세웠지만 총독부의 자문 역할만 하고 친일파로 구성된 기구는 (     )이다.",a:["중추원"],e:"중추원 = 자문 역할, 친일파 인물로 구성."},
+{l:1,s:1,t:"bl",q:"1910년대 헌병이 경찰 업무·치안 업무·일반 행정 업무까지 맡은 제도는 (     )이다.",a:["헌병경찰제","헌병경찰제도","헌병경찰"],e:"각 도의 헌병 대장이 지방 경찰권까지 장악했어."},
+{l:1,s:1,t:"bl",q:"1912년 공포되어 한국인에게만 태형을 적용한 법령은 (     )이다.",a:["조선태형령","태형령"],e:"조선 태형령(1912) — 매질(볼기 치기)을 한국인에게만 적용."},
+{l:1,s:1,t:"bl",q:"헌병 경찰이 법에서 정한 범죄 일부를 즉결 심판할 수 있게 한 1912년 법령은 (     )이다.",a:["범죄즉결례"],e:"범죄 즉결례(1912) — 재판 없이 바로 처벌 가능."},
+{l:1,s:1,t:"ox",q:"경찰범 처벌 규칙은 여러 경범죄 항목을 정해 한국인의 일상생활까지 통제하였다.",a:true,e:"경찰범 처벌 규칙(1912)."},
+{l:1,s:1,t:"ox",q:"1910년대에는 일반 관리와 학교 교원도 제복을 입고 칼을 찼다.",a:true,e:"위압감과 공포감을 주려는 것."},
+{l:1,s:1,t:"bl",q:"1910년대 보통학교 수업 연한은 (     )년이었다.",a:["4","4년","사"],e:"4년으로 짧게 함 → 문화 정치 때 6년으로 늘어남."},
+{l:1,s:1,t:"ox",q:"1910년대 일제는 한국인에게 고등 교육의 기회를 넓혀 주었다.",a:false,e:"주로 보통 교육·실업 교육만 해서 고등 교육 기회를 제한했어."},
+{l:1,s:1,t:"ox",q:"1910년대 한국인은 언론·출판·집회·결사의 자유를 빼앗겼다.",a:true,e:"기본권 제한. 결사 = 모임, 단체 조직."},
+{l:1,s:1,t:"bl",q:"1910년대 일제의 통치 방식을 (     ) 통치라고 한다.",a:["무단"],e:"1910년대 무단 통치 → 1920년대 문화 통치 → 1930년대 민족 말살 통치."},
+/* ---------- 하 : 02 ---------- */
+{l:1,s:2,t:"bl",q:"일제가 무단 통치의 한계를 깨닫고 '문화 정치'로 바꾼 계기는 (     )이다.",a:["3·1운동","31운동","삼일운동","3.1운동"],e:"3·1 운동을 계기로 문화 정치로 전환."},
+{l:1,s:2,t:"bl",q:"문화 정치 시기 헌병 경찰제는 (     )(으)로 바뀌었다.",a:["보통경찰제","보통경찰제도","보통경찰"],e:"헌병 경찰제 → 보통 경찰제. 하지만 경찰 수는 오히려 크게 늘었어."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기 태형 제도와 관리·교원의 제복 착용이 폐지되었다.",a:true,e:"제도 변화 내용."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기 문관 출신 총독이 실제로 임명되었다.",a:false,e:"문관도 임명 가능하게 바꿨지만 실제로 임명된 문관 총독은 0명."},
+{l:1,s:2,t:"bl",q:"식민 통치가 끝날 때까지 실제 임명된 문관 총독의 수는 (     )명이다.",a:["0","0명","영"],e:"0명 — 문화 정치의 기만성을 보여 줌."},
+{l:1,s:2,t:"bl",q:"1925년 시행되어 사회주의자, 나아가 독립운동가를 탄압하는 데 쓰인 법은 (     )이다.",a:["치안유지법"],e:"치안 유지법(1925): 사회주의자 제압 → 독립운동가 제압."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기에는 언론·출판에 대한 검열이 완전히 폐지되었다.",a:false,e:"제한적으로 허용했을 뿐이고 기사 삭제·압수·정간 등 검열은 오히려 강화됐어."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기 조선일보와 동아일보가 발간되었다.",a:true,e:"언론·출판·집회·결사의 자유를 제한적으로 허용한 결과."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기에는 경찰 수가 줄면서 감시와 통제가 크게 완화되었다.",a:false,e:"경찰 관서·인원·비용이 3배 이상 늘었어."},
+{l:1,s:2,t:"bl",q:"문화 정치 시기 경찰 체제는 1군 1경찰서, 1면 1(     ) 체제였다.",a:["주재소"],e:"1군 1경찰서, 1면 1주재소."},
+{l:1,s:2,t:"bl",q:"문화 정치의 실제 성격은 (     ) 세력을 체계적으로 키워 민족을 분열시키려는 것이었다.",a:["친일"],e:"친일 세력 육성 + 강화된 경찰력 → 민족 분열."},
+{l:1,s:2,t:"ox",q:"도 평의회는 의결권을 가진 지방 자치 기구였다.",a:false,e:"의결권 없는 자문 기구에 불과했어."},
+{l:1,s:2,t:"bl",q:"조선 교육령 개정으로 보통학교 교육 연한이 4년에서 (     )년으로 늘었다.",a:["6","6년","육"],e:"4년 → 6년. 하지만 학교 수 부족, 비싼 학비로 취학률은 낮았어."},
+{l:1,s:2,t:"ox",q:"문화 정치 시기 한국인의 취학률은 일본인보다 낮았다.",a:true,e:"학교 수 부족, 고가의 학비 → 한국인 취학률 저조."},
+/* ---------- 하 : 03 ---------- */
+{l:1,s:3,t:"bl",q:"중일 전쟁 이후 인적·물적 자원을 동원하려고 1938년 제정한 법은 (     )이다.",a:["국가총동원법"],e:"국가 총동원법(1938)."},
+{l:1,s:3,t:"bl",q:"국민 정신 총동원 조선 연맹의 말단 기구로 조직된 것은 (     )이다.",a:["애국반"],e:"애국반 — 반상회로 정책 전달, 식량 배급에도 애국반장 확인 필요."},
+{l:1,s:3,t:"bl",q:"'일본과 조선은 하나'라는 뜻으로 황국 신민화 정책에서 강조한 구호는 (     )이다.",a:["내선일체"],e:"내선일체 강조 → 황국 신민 서사 암송, 궁성 요배, 신사 참배 강요."},
+{l:1,s:3,t:"bl",q:"한국인에게 일본식 성과 이름을 쓰도록 강요한 정책은 (     )이다.",a:["창씨개명"],e:"창씨개명."},
+{l:1,s:3,t:"bl",q:"1941년 소학교는 황국 신민 학교, 즉 (     )(으)로 개편되었다.",a:["국민학교","황국신민학교"],e:"소학교 → 황국 신민 학교(국민학교), 1941."},
+{l:1,s:3,t:"ox",q:"궁성 요배는 일왕이 사는 궁궐을 향해 절하게 한 것이다.",a:true,e:"궁성 요배 = 일왕 궁궐에 절."},
+{l:1,s:3,t:"ox",q:"민족 말살 통치 시기 한국어 학습 시간이 늘어났다.",a:false,e:"한국어 학습 시간 폐지, 우리말 사용 금지, 일본어로 수업."},
+{l:1,s:3,t:"ox",q:"1940년 한국어로 발간되던 동아일보·조선일보가 폐간되었다.",a:true,e:"언론 통제 — 신문 폐간(1940)."},
+{l:1,s:3,t:"bl",q:"1944년 실시되어 한국 청년을 강제로 일본군 병사로 끌고 간 제도는 (     )이다.",a:["징병제"],e:"지원병제(1938) → 학도 지원병(1943) → 징병제(1944)."},
+{l:1,s:3,t:"bl",q:"1938년 실시된, 형식상 지원이었던 병력 동원 제도는 (     )이다.",a:["지원병제","지원병제도"],e:"지원병제(1938) — 형식은 지원이지만 실제로는 강제 동원."},
+{l:1,s:3,t:"bl",q:"1939년 시행되어 청장년을 광산·비행장·군수 공장 노동에 동원한 법령은 (     )이다.",a:["국민징용령"],e:"국민 징용령(1939)."},
+{l:1,s:3,t:"bl",q:"1944년 공포되어 여성을 군수 공장 노동에 동원한 법령은 (     )이다.",a:["여자정신근로령"],e:"여자 정신 근로령(1944)."},
+{l:1,s:3,t:"bl",q:"일본이 대륙 침략으로 경제권을 넓히려 한 배경이 된 경제 위기는 (     )이다.",a:["대공황"],e:"대공황 극복 → 대륙 침략."},
+{l:1,s:3,t:"bl",q:"일본은 동남아시아로 침략을 넓히며 (     ) 결성을 주장하였다.",a:["대동아공영권"],e:"대동아 공영권."},
+{l:1,s:3,t:"bl",q:"미국은 (     ) 해전에서 승리한 뒤 일본 본토를 공격하였다.",a:["미드웨이"],e:"미드웨이 해전."},
+{l:1,s:3,t:"ox",q:"아시아·태평양 전쟁은 일본이 하와이 진주만의 미국 함대를 기습 공격하면서 일어났다.",a:true,e:"1941년."},
+{l:1,s:3,t:"ox",q:"민족 말살 통치 시기 일제는 한국어와 한국 역사 교육을 강화하였다.",a:false,e:"우리말 사용 금지, 수신(도덕) 교과 강화."},
+/* ---------- 하 : 04 ---------- */
+{l:1,s:4,t:"bl",q:"토지 조사 사업은 1910년부터 (     )년까지 실시되었다.",a:["1918","1918년"],e:"1910~1918."},
+{l:1,s:4,t:"bl",q:"1912년 공포된 토지 조사 사업의 법령은 (     )이다.",a:["토지조사령"],e:"임시 토지 조사국 설치(1910) → 토지 조사령(1912)."},
+{l:1,s:4,t:"ox",q:"토지 조사 사업은 정해진 기간 안에 소유자가 직접 신고해야 소유를 인정받는 방식이었다.",a:true,e:"신고 방식."},
+{l:1,s:4,t:"ox",q:"토지 조사 사업은 실제 경작자에게 토지 소유권을 자동으로 인정해 주었다.",a:false,e:"직접 신고해야 했고, 오히려 농민의 관습적 경작권은 부정됐어."},
+{l:1,s:4,t:"ox",q:"토지 조사 사업으로 농민의 경작권이 안정적으로 보장되었다.",a:false,e:"관습법적인 경작권이 부정됐어."},
+{l:1,s:4,t:"bl",q:"토지 조사 사업 후 황실 토지 일부를 넘겨받아 일본인 이민자에게 싸게 판 회사는 (     )이다.",a:["동양척식주식회사","동척"],e:"동양 척식 주식회사 — 고율의 소작료도 적용."},
+{l:1,s:4,t:"bl",q:"토지 조사 사업으로 농민들의 관습법적인 (     )이 부정되었다.",a:["경작권"],e:"경작권 부정 → 소작농 몰락."},
+{l:1,s:4,t:"bl",q:"1910년 공포되어 회사를 세울 때 총독의 허가를 받게 한 법령은 (     )이다.",a:["회사령"],e:"회사령(1910) — 허가제. 1920년 폐지되며 신고제로."},
+{l:1,s:4,t:"bl",q:"1918년 금융·산업 지배를 강화하려고 설립된 은행은 (     )이다.",a:["조선식산은행"],e:"조선 식산 은행(1918)."},
+{l:1,s:4,t:"ox",q:"일제는 한국은행을 조선은행으로 고쳤다.",a:true,e:"금융 장악."},
+{l:1,s:4,t:"ox",q:"어업령·삼림령·조선 광업령은 각종 자원을 독점하려고 공포한 법령이다.",a:true,e:"자원 독점, 막대한 이익 획득."},
+{l:1,s:4,t:"ox",q:"토지 조사 사업의 결과 조선 총독부의 지세 수입이 늘었다.",a:true,e:"과세 대상 토지가 늘었기 때문."},
+{l:1,s:4,t:"ox",q:"회사령 시기 한국인 기업은 주로 대규모 전기·철도 사업을 운영하였다.",a:false,e:"전기·철도·금융은 일본 기업이 장악, 한국인 기업은 소규모 제조업·매매업에 한정."},
+/* ---------- 하 : 05 ---------- */
+{l:1,s:5,t:"bl",q:"1920~1934년 일본의 식량 문제를 해결하려고 한국에서 쌀 생산을 늘리려 한 정책은 (     )이다.",a:["산미증식계획"],e:"산미 증식 계획."},
+{l:1,s:5,t:"bl",q:"산미 증식 계획 때 저수지·제방 설치를 위해 전국에 조직된 것은 (     )이다.",a:["수리조합"],e:"수리 조합 — 비용이 소작농에게 전가됨."},
+{l:1,s:5,t:"ox",q:"산미 증식 계획은 한국인의 식량 사정을 개선하려는 목적으로 실시되었다.",a:false,e:"일본의 식량 문제 해결이 목적. 오히려 한국인 식량 사정 악화."},
+{l:1,s:5,t:"ox",q:"산미 증식 계획 결과 쌀 생산량은 목표만큼 늘지 않았지만 일본으로의 이출량은 매년 늘었다.",a:true,e:"그래서 한국인의 식량 사정이 나빠졌어."},
+{l:1,s:5,t:"bl",q:"1920년 회사령이 폐지되면서 회사 설립은 허가제에서 (     )로 바뀌었다.",a:["신고제"],e:"허가제 → 신고제."},
+{l:1,s:5,t:"bl",q:"1923년 한일 간 (     )이/가 폐지되어 일본 상품의 가격 경쟁력이 강해졌다.",a:["관세"],e:"관세 폐지(1923)."},
+{l:1,s:5,t:"bl",q:"1928년 발표되어 은행 합병을 추진하고 일본 자본의 지배를 강화한 법령은 (     )이다.",a:["신은행령"],e:"신은행령(1928)."},
+{l:1,s:5,t:"ox",q:"회사령 폐지 후 일본 대기업은 주로 한반도 남부에 공장을 세웠다.",a:false,e:"지하자원이 풍부한 북부 지역."},
+{l:1,s:5,t:"ox",q:"산미 증식 계획 시기 토지 회사와 지주들은 일본에 쌀을 팔아 부를 쌓았다.",a:true,e:"반면 농민은 각종 비용을 떠안아 생활이 악화됐어."},
+{l:1,s:5,t:"ox",q:"회사령 폐지 이후 한일 노동자 사이에 임금 차이가 생겼다.",a:true,e:"한국인 노동자가 더 적은 임금, 장시간 노동."},
+/* ---------- 하 : 06 ---------- */
+{l:1,s:6,t:"bl",q:"남쪽에는 면화, 북쪽에서는 양을 기르게 한 정책은 (     ) 정책이다.",a:["남면북양"],e:"남면북양 — 면화 ~ 양."},
+{l:1,s:6,t:"bl",q:"중일 전쟁 이후 한국을 대륙 침략에 필요한 물자·인력 공급처로 삼으려 한 정책은 (     ) 정책이다.",a:["병참기지화"],e:"병참 기지화 정책."},
+{l:1,s:6,t:"ox",q:"병참 기지화 정책으로 서울·경기에는 중화학 공업이 발달하였다.",a:false,e:"서울·경기 = 소비재 공업, 황해도·평안도·함경도 = 중화학 공업."},
+{l:1,s:6,t:"bl",q:"1932년부터 조선 총독부가 벌였지만 농민 개인의 책임과 정신력만 강조한 운동은 (     )이다.",a:["농촌진흥운동"],e:"농촌 진흥 운동 — 실질적 문제 해결 못함."},
+{l:1,s:6,t:"bl",q:"1934년 제정되어 소작 기간을 3~7년으로 정한 법령은 (     )이다.",a:["조선농지령","농지령"],e:"조선 농지령(1934)."},
+{l:1,s:6,t:"ox",q:"공출 제도는 무기 재료가 되는 금속 제품 등을 강제로 거두어 간 것이다.",a:true,e:"공출 제도."},
+{l:1,s:6,t:"bl",q:"정해진 양만큼만 식량을 나누어 준 제도는 (     )이다.",a:["식량배급제","배급제"],e:"식량 배급제."},
+{l:1,s:6,t:"bl",q:"전시 수탈 시기 일제가 쌀을 강제로 거두어 간 제도는 미곡 (     ) 제도이다.",a:["공출"],e:"미곡 공출 제도."},
+{l:1,s:6,t:"ox",q:"전시 수탈 시기 산미 증식 계획이 다시 시작되었다.",a:true,e:"산미 증식 계획 재개."},
+{l:1,s:6,t:"ox",q:"병참 기지화 정책으로 일본 대기업이 한반도 북부에 발전소를 건설하였다.",a:true,e:"북부에 발전소, 중화학 공업 투자."},
+{l:1,s:6,t:"ox",q:"국방헌금과 위문 금품은 한국인이 자발적으로 낸 것이었다.",a:false,e:"강요된 기부금이야."},
+/* ---------- 하 : 07 ---------- */
+{l:1,s:7,t:"bl",q:"1932년 일제가 만주에 세운 나라는 (     )이다.",a:["만주국"],e:"만주국 수립 후 국내 한국인을 강제 이주시킴."},
+{l:1,s:7,t:"bl",q:"1923년 일본에서 일어나 많은 한국인이 일본인에게 희생된 계기가 된 재해는 (     )이다.",a:["관동대지진"],e:"관동 대지진(1923)."},
+{l:1,s:7,t:"bl",q:"중앙아시아에 정착한 한국인을 카레이스키라 부르고, 그 후손을 (     )이라 한다.",a:["고려인"],e:"고려인."},
+{l:1,s:7,t:"ox",q:"중일 전쟁 직후 소련은 연해주의 한국인을 중앙아시아로 강제 이주시켰다.",a:true,e:"이 과정에서 많은 한국인이 희생됐어."},
+{l:1,s:7,t:"ox",q:"한인의 미주 이주는 1902년 하와이 사탕수수 농장 노동자 파견으로 시작되었다.",a:true,e:"이후 미국 서부로 다시 이주."},
+{l:1,s:7,t:"bl",q:"1910년 미주에서 조직되어 독립운동을 후원한 한인 단체는 (     )이다.",a:["대한인국민회"],e:"대한인 국민회(1910)."},
+{l:1,s:7,t:"bl",q:"1941년 미주에서 결성되어 외교 독립 활동을 펼친 단체는 (     )이다.",a:["재미한족연합위원회"],e:"재미 한족 연합 위원회(1941) — 한인 국방 경위대(맹호군) 조직."},
+{l:1,s:7,t:"ox",q:"1952년 만주의 한국인들이 중국 공민 자격을 얻고 옌볜 조선족 자치구가 지정되었다.",a:true,e:"만주 개척."},
+{l:1,s:7,t:"ox",q:"광복 이후 일본에 남은 한국인들이 재일 동포 사회를 이루었다.",a:true,e:"강제 동원 등으로 일본에 간 한국인 일부가 남음."},
+{l:1,s:7,t:"ox",q:"연해주에는 국권 피탈 이후 민족 운동가들이 이주하여 한인촌을 이루었다.",a:true,e:"한인촌 형성, 독립운동 단체 조직."},
+{l:1,s:7,t:"bl",q:"1920년대 일제가 만주 독립운동가를 체포하기 위해 맺은 협정은 (     ) 협정이다.",a:["미쓰야"],e:"미쓰야 협정 — 독립운동가 체포."},
+
+/* ========== 중 ========== */
+{l:2,s:1,t:"mc",q:"1910년대 무단 통치 시기의 모습으로 옳은 것은?",o:["헌병이 일반 행정 업무까지 맡았다.","보통 경찰이 치안을 담당하였다.","도 평의회가 설치되었다.","치안 유지법으로 사회주의자를 체포하였다.","애국반이 반상회를 열었다."],e:"헌병 경찰제는 1910년대. 보통 경찰·도 평의회·치안 유지법은 1920년대, 애국반은 1930년대 이후."},
+{l:2,s:1,t:"mc",q:"조선 태형령에 대한 설명으로 옳은 것은?",o:["한국인에게만 태형을 적용하였다.","일본인에게도 똑같이 적용되었다.","1925년에 공포되었다.","문화 정치 시기에 처음 제정되었다.","재판을 거쳐야만 집행할 수 있었다."],e:"조선 태형령(1912) — 한국인에게만. 문화 정치 때 폐지."},
+{l:2,s:1,t:"mc",q:"중추원에 대한 설명으로 옳은 것은?",o:["조선 총독부의 자문 역할을 하였고 친일파로 구성되었다.","입법권을 가진 한국인 의회였다.","한국인이 직접 선거로 의원을 뽑았다.","식민 통치의 최고 기구였다.","국가 총동원법에 따라 설치되었다."],e:"명분은 한국인 정치 참여, 실제로는 자문 기구. 최고 기구는 조선 총독부."},
+{l:2,s:1,t:"mc",q:"조선 총독에 대한 설명으로 옳지 않은 것은?",o:["일본 의회와 내각의 통제를 받았다.","일왕에 직속되었다.","현역 육해군 대장 중에서 임명되었다.","행정권·입법권·사법권을 행사하였다.","군 통수권을 가졌다."],e:"총독은 일본 의회·내각의 통제를 받지 않았어."},
+{l:2,s:1,t:"mc",q:"1910년대 일제의 사회 통제 내용으로 옳지 않은 것은?",o:["조선일보와 동아일보 발간을 허용하였다.","관리와 교원이 제복을 입고 칼을 찼다.","언론·출판·집회·결사의 자유를 빼앗았다.","보통학교 수업 연한을 4년으로 짧게 하였다.","주로 보통 교육과 실업 교육을 실시하였다."],e:"신문 발간 허용은 1920년대 문화 정치."},
+{l:2,s:1,t:"mc",q:"러시아 혁명과 관련된 흐름을 순서대로 바르게 나열한 것은?",o:["제정 붕괴(1917) → 혁명 정부 수립 → 코민테른 결성(1919) → 소련 수립(1922)","코민테른 결성 → 제정 붕괴 → 소련 수립 → 혁명 정부 수립","소련 수립 → 제정 붕괴 → 코민테른 결성 → 혁명 정부 수립","제정 붕괴 → 소련 수립 → 혁명 정부 수립 → 코민테른 결성"],e:"1917 → 1919 → 1922."},
+{l:2,s:1,t:"mc",q:"1912년에 공포된 한국인 통제 법령이 아닌 것은?",o:["치안 유지법","범죄 즉결례","조선 태형령","경찰범 처벌 규칙"],e:"치안 유지법은 1925년."},
+{l:2,s:1,t:"mc",q:"범죄 즉결례에 대한 설명으로 옳은 것은?",o:["헌병 경찰이 정해진 범죄 일부를 재판 없이 처벌할 수 있었다.","한국인에게만 태형을 적용하는 법이었다.","사회주의 운동을 탄압하려고 만들었다.","전시에 제국 신민을 징용할 수 있게 하였다.","소작 기간을 3년 이상으로 정하였다."],e:"즉결 심판."},
+/* 중 02 */
+{l:2,s:2,t:"mc",q:"문화 정치의 '내용'과 '실상'의 연결로 옳지 않은 것은?",o:["보통학교 연한 증가 – 한국인 취학률이 일본인보다 높아짐","보통 경찰제 실시 – 경찰 관서·인원·비용이 크게 늘어남","언론의 제한적 허용 – 검열 강화(기사 삭제·압수·정간)","문관 총독 임명 가능 – 실제 문관 총독 0명","도 평의회 설치 – 의결권 없는 자문 기구"],e:"학교 부족·비싼 학비로 한국인 취학률은 일본인보다 낮았어."},
+{l:2,s:2,t:"mc",q:"일제가 '문화 정치'를 내세운 목적으로 가장 적절한 것은?",o:["식민 지배에 대한 한국인의 저항을 무마하기 위해","한국의 자치 정부를 세워 주기 위해","한국인의 고등 교육을 늘리기 위해","경찰 인원을 줄여 비용을 아끼기 위해","한국어 사용을 금지하기 위해"],e:"명분은 문화·관습 존중, 목적은 저항 무마."},
+{l:2,s:2,t:"mc",q:"치안 유지법에 대한 설명으로 옳은 것은?",o:["1925년 시행되어 사회주의자와 독립운동가 탄압에 이용되었다.","1912년 한국인에게만 태형을 적용하였다.","1938년 인적·물적 자원을 동원하였다.","회사 설립을 허가제로 바꾸었다.","문관 총독 임명을 가능하게 하였다."],e:"치안 유지법(1925) = 문화 정치의 실상."},
+{l:2,s:2,t:"mc",q:"도 평의회의 실상으로 옳은 것은?",o:["의원 1/3은 도장관이 임명하였고 의결권이 없었다.","모든 의원을 한국인이 직접 선거로 뽑았다.","예산을 의결하는 지방 의회였다.","1910년대 무단 통치 시기에 설치되었다.","일본인의 참여가 금지되었다."],e:"1/3 도장관 임명, 2/3 부·면 협의회원 선출, 의결권 없는 자문 기구."},
+{l:2,s:2,t:"mc",q:"문화 정치 시기의 사실로 옳지 않은 것은?",o:["태형 집행이 더욱 강화되었다.","헌병 경찰제가 보통 경찰제로 바뀌었다.","조선일보·동아일보가 발간되었다.","치안 유지법이 시행되었다.","1군 1경찰서, 1면 1주재소 체제가 확립되었다."],e:"태형 제도는 문화 정치 때 폐지."},
+{l:2,s:2,t:"mc",q:"문화 정치 시기 신문에 대한 일제의 정책으로 옳은 것은?",o:["발간을 허가했지만 기사 삭제·압수·정간 등으로 통제하였다.","검열을 완전히 폐지하였다.","한국어 신문을 모두 폐간시켰다.","신문 발행 자체를 허가하지 않았다.","일본어로만 신문을 내게 하였다."],e:"신문 폐간은 1940년(민족 말살 통치)."},
+{l:2,s:2,t:"mc",q:"문화 정치의 성격을 가장 잘 나타낸 것은?",o:["친일 세력을 키워 민족을 분열시키려 하였다.","한국인의 문화와 관습을 진정으로 존중하였다.","한국의 독립을 단계적으로 준비하였다.","경찰력을 줄이고 자치를 확대하였다.","황국 신민화를 본격적으로 추진하였다."],e:"기만적인 '문화 정치'."},
+/* 중 03 */
+{l:2,s:3,t:"mc",q:"민족 말살 통치 시기의 정책이 아닌 것은?",o:["보통 경찰제 실시","신사 참배 강요","궁성 요배 강요","황국 신민 서사 암송","창씨개명 강요"],e:"보통 경찰제는 1920년대 문화 정치."},
+{l:2,s:3,t:"mc",q:"일제의 병력 강제 동원 제도를 실시된 순서대로 나열한 것은?",o:["지원병제 → 학도 지원병 제도 → 징병제","징병제 → 지원병제 → 학도 지원병 제도","학도 지원병 제도 → 징병제 → 지원병제","지원병제 → 징병제 → 학도 지원병 제도"],e:"1938 → 1943 → 1944."},
+{l:2,s:3,t:"mc",q:"노동력 강제 동원에 대한 연결로 옳은 것은?",o:["국민 징용령 – 청장년을 광산·군수 공장 등에 동원","여자 정신 근로령 – 청장년 남성을 비행장에 동원","국민 징용령 – 1944년 공포","여자 정신 근로령 – 1939년 시행","징병제 – 여성을 군수 공장에 동원"],e:"국민 징용령(1939) 청장년, 여자 정신 근로령(1944) 여성."},
+{l:2,s:3,t:"mc",q:"일제의 침략 전쟁을 순서대로 바르게 나열한 것은?",o:["만주 사변 → 중일 전쟁 → 아시아·태평양 전쟁","중일 전쟁 → 만주 사변 → 아시아·태평양 전쟁","아시아·태평양 전쟁 → 만주 사변 → 중일 전쟁","만주 사변 → 아시아·태평양 전쟁 → 중일 전쟁"],e:"1931 → 1937 → 1941."},
+{l:2,s:3,t:"mc",q:"국가 총동원법에 대한 설명으로 옳은 것은?",o:["전시에 칙령으로 제국 신민을 징용할 수 있게 하였다.","3·1 운동 직후 제정되었다.","회사 설립을 허가제로 하였다.","한국인에게만 태형을 적용하였다.","소작 기간을 3~7년으로 정하였다."],e:"국가 총동원법(1938) 제4조."},
+{l:2,s:3,t:"mc",q:"1940년에 있었던 일로 옳은 것은?",o:["동아일보·조선일보 등 한국어 신문 폐간","소학교를 국민학교로 개편","국가 총동원법 제정","치안 유지법 시행","징병제 실시"],e:"국민학교 1941, 총동원법 1938, 치안 유지법 1925, 징병제 1944."},
+{l:2,s:3,t:"mc",q:"애국반에 대한 설명으로 옳은 것은?",o:["국민 정신 총동원 조선 연맹의 말단 기구였다.","1910년대 헌병 경찰이 만든 조직이었다.","독립운동가들이 만든 비밀 결사였다.","문화 정치 시기 지방 자문 기구였다.","미주 한인들이 조직한 단체였다."],e:"애국반 — 정책 전달, 금속 공출, 식량 배급 확인 등."},
+{l:2,s:3,t:"mc",q:"민족 말살 통치 시기 교육 정책으로 옳은 것은?",o:["한국어 학습 시간을 없애고 일본어로 수업하였다.","보통학교 수업 연한을 4년으로 하였다.","대학 설립을 처음 허용하였다.","보통학교 연한을 4년에서 6년으로 늘렸다.","교원에게 제복 착용을 처음 강요하였다."],e:"다른 보기는 1910년대·1920년대 내용."},
+{l:2,s:3,t:"mc",q:"황국 신민화 정책 내용과 설명의 연결로 옳지 않은 것은?",o:["창씨개명 – 일본어로 수업 진행","내선일체 – 일본과 조선은 하나","궁성 요배 – 일왕의 궁궐을 향해 절함","신사 참배 – 일본 신을 모신 신사에 참배","황국 신민 서사 – 암송 강요"],e:"창씨개명은 일본식 성명 사용 강요."},
+/* 중 04 */
+{l:2,s:4,t:"mc",q:"토지 조사 사업의 실질적 목적으로 옳은 것은?",o:["지세 수입을 늘리고 일본인의 토지 투자를 지원하려고","농민의 경작권을 보장하려고","소작료를 낮추려고","한국인 지주를 없애려고","쌀을 일본으로 보내려고"],e:"명분: 근대적 소유권·공정한 지세 / 실제: 재정 확보, 일본인 투자 지원 → 식민 지배의 경제적 기초."},
+{l:2,s:4,t:"mc",q:"토지 조사 사업의 결과·영향으로 옳지 않은 것은?",o:["농민의 관습적 경작권이 강화되었다.","조선 총독부의 지세 수입이 늘었다.","지주의 소유권이 절대적 권리로 인정되었다.","동양 척식 주식회사가 토지를 넘겨받았다.","땅을 잃은 농민이 만주·연해주로 이주하기도 하였다."],e:"경작권은 부정됐어."},
+{l:2,s:4,t:"mc",q:"회사령(1910)에 대한 설명으로 옳은 것은?",o:["회사를 세우려면 조선 총독의 허가가 필요하였다.","회사 설립을 신고제로 하였다.","1920년에 처음 공포되었다.","한국인 기업의 성장을 도왔다.","일본 상품의 관세를 없앴다."],e:"허가제 → 한국인 기업은 소규모 제조업·매매업에 한정."},
+{l:2,s:4,t:"mc",q:"토지 조사 사업 이후 1920년대 소작 쟁의가 자주 일어난 원인으로 가장 적절한 것은?",o:["경작권을 잃은 농민이 고율의 소작료를 부담하게 되어서","소작료가 크게 낮아져서","농민 모두가 토지 소유자가 되어서","조선 농지령으로 지주 권리가 약해져서","공출 제도가 실시되어서"],e:"고율의 소작료 → 소작 쟁의의 계기."},
+{l:2,s:4,t:"mc",q:"1910년대 일제의 산업 장악 정책이 아닌 것은?",o:["관세 폐지","회사령 공포","조선 광업령 공포","조선 식산 은행 설립","철도망 구축"],e:"관세 폐지는 1923년."},
+{l:2,s:4,t:"mc",q:"일제가 철도망·도로·항만을 확충한 목적으로 가장 적절한 것은?",o:["한국 상품의 일본 이출과 일본 상품의 한국 판매","한국인 기업의 해외 수출 지원","농민의 소작료 경감","한국인의 지방 자치 확대","독립운동 지원"],e:"수탈과 일본 상품 판매에 이용."},
+/* 중 05 */
+{l:2,s:5,t:"mc",q:"산미 증식 계획의 배경으로 옳은 것은?",o:["일본이 공업화로 농업 생산력이 부족해졌다.","한국의 쌀이 남아돌았다.","대공황으로 쌀값이 크게 올랐다.","중일 전쟁으로 군량이 필요했다.","한국인의 식량 부족을 해결하려 했다."],e:"일본 공업화 → 일본 농업 생산력 부족 → 한국에서 쌀 확보."},
+{l:2,s:5,t:"mc",q:"산미 증식 계획의 내용이 아닌 것은?",o:["논을 밭으로 전환하였다.","벼 종자를 다수확 품종으로 개량하였다.","비료 사용을 확대하였다.","수리 조합을 조직하였다.","농토를 개간하였다."],e:"밭을 논으로 바꿨어."},
+{l:2,s:5,t:"mc",q:"수리 조합에 대한 설명으로 옳은 것은?",o:["지주들이 건설비와 조합비를 소작농에게 떠넘겨 반대 운동이 일어났다.","소작농이 비용 부담 없이 혜택을 받았다.","1930년대 병참 기지화를 위해 만들어졌다.","공장 노동자를 위한 조합이었다.","금속 제품을 공출하는 조직이었다."],e:"수리 조합비 부담 → 농민 반대 운동."},
+{l:2,s:5,t:"mc",q:"회사령 폐지(1920)의 목적으로 옳은 것은?",o:["제1차 세계 대전 때 자본을 쌓은 일본 기업의 한국 진출 지원","한국인 기업의 성장 지원","한국인 노동자의 임금 인상","일본 상품의 관세 부과","농촌 진흥 운동 지원"],e:"잉여 자본을 축적한 일본 기업의 진출·투자 지원."},
+{l:2,s:5,t:"mc",q:"회사령 폐지 이후의 영향으로 옳지 않은 것은?",o:["한국인 노동자가 일본인보다 높은 임금을 받았다.","한일 회사 간 자본금과 생산액 차이가 컸다.","한국인 여성·미성년 노동자의 노동 환경은 더 열악하였다.","일본 대기업이 한국에 본격 진출하였다.","한국인 노동자는 주로 단순 노무직에 종사하였다."],e:"한국인 노동자가 더 적은 임금으로 장시간 노동."},
+{l:2,s:5,t:"mc",q:"1920년대 일본 상품과 자본의 진출에 대한 연결로 옳은 것은?",o:["관세 폐지(1923) – 일본 상품 가격 경쟁력 강화","신은행령(1928) – 한국인 은행의 독립성 강화","관세 폐지(1923) – 한국 상품 보호","회사령 폐지(1920) – 신고제를 허가제로 변경","신은행령(1928) – 회사 설립 허가제"],e:"신은행령 → 은행 합병, 일본 자본 지배 강화."},
+/* 중 06 */
+{l:2,s:6,t:"mc",q:"남면북양 정책이 실시된 배경으로 옳은 것은?",o:["대공황 여파로 일본·한국·만주를 잇는 경제 블록을 만들려 하였다.","3·1 운동으로 무단 통치의 한계를 느꼈다.","제1차 세계 대전으로 잉여 자본이 쌓였다.","일본 공업화로 쌀이 부족해졌다.","한국인 기업을 보호하려 하였다."],e:"대공황 → 경제 블록 → 공업화·남면북양."},
+{l:2,s:6,t:"mc",q:"병참 기지화 정책의 내용으로 옳은 것은?",o:["일본 대기업이 북부에 발전소를 짓고 중화학 공업에 투자하였다.","남부 지역에 소비재 공장만 세웠다.","한국인 기업의 중화학 공업 진출을 지원하였다.","회사 설립을 허가제로 바꾸었다.","토지 소유권을 신고하게 하였다."],e:"화학·금속·기계 공업 등 군수 산업 관련."},
+{l:2,s:6,t:"mc",q:"병참 기지화 정책의 영향으로 옳은 것은?",o:["지역별 공업 구조가 달라져 산업별 불균형이 심해졌다.","전국이 고르게 공업화되었다.","서울·경기에 중화학 공업이 집중되었다.","한국인의 경제적 자립이 이루어졌다.","농업 생산이 크게 늘었다."],e:"서울·경기 소비재, 북부 중화학 → 불균형 심화."},
+{l:2,s:6,t:"mc",q:"농촌 진흥 운동에 대한 설명으로 옳은 것은?",o:["농민 개인의 책임과 정신력만 강조하여 실질적 문제를 해결하지 못하였다.","소작료를 법으로 크게 낮추었다.","1920년대 산미 증식 계획과 함께 시작되었다.","농민 단체가 스스로 벌인 운동이었다.","토지를 농민에게 나누어 주었다."],e:"조선 총독부가 1932년부터 전개 — 사실상 통제."},
+{l:2,s:6,t:"mc",q:"조선 농지령의 한계로 옳은 것은?",o:["소작농 관리자의 횡포를 통제하지 못하고 높은 소작료가 유지되었다.","소작 기간을 1년으로 줄였다.","지주의 소유권을 부정하였다.","소작료를 폐지하였다.","회사 설립을 막았다."],e:"지주 권리 옹호, 높은 소작료 유지."},
+{l:2,s:6,t:"mc",q:"국가 총동원법 제정 이후 전시 수탈 내용이 아닌 것은?",o:["회사령 공포","공출 제도 실시","식량 배급제 실시","국방헌금 강요","산미 증식 계획 재개"],e:"회사령 공포는 1910년."},
+{l:2,s:6,t:"mc",q:"1930년대 농촌 정책이 나오게 된 공통 배경은?",o:["대공황으로 농촌 경제가 악화되고 농민 운동이 확산되었다.","3·1 운동으로 통치 방식이 바뀌었다.","토지 조사 사업이 막 시작되었다.","관세가 폐지되었다.","러시아 혁명이 일어났다."],e:"농촌 진흥 운동(1932), 조선 농지령(1934)."},
+/* 중 07 */
+{l:2,s:7,t:"mc",q:"국외 이주 지역과 내용의 연결로 옳지 않은 것은?",o:["연해주 – 1902년 사탕수수 농장 노동자 파견","만주 – 황무지 개간, 한인 사회 형성","일본 – 관동 대지진 때 많은 한국인 희생","미주 – 대한인 국민회 조직","연해주 – 중앙아시아 강제 이주"],e:"사탕수수 농장 노동자 파견은 하와이(미주)."},
+{l:2,s:7,t:"mc",q:"만주로 이주한 한국인에 대한 설명으로 옳은 것은?",o:["황무지를 개간하고 만주 독립운동 세력을 지원하였다.","소련에 의해 중앙아시아로 강제 이주되었다.","재미 한족 연합 위원회를 결성하였다.","관동 대지진 때 큰 희생을 당하였다.","카레이스키라고 불렸다."],e:"나머지는 연해주·미주·일본 이야기."},
+{l:2,s:7,t:"mc",q:"한국인이 일본으로 건너가게 된 흐름으로 옳은 것은?",o:["1차 대전 후 노동력 수요 → 일본 진출 → 1930년대 강제 동원 증가","만주국 수립 → 강제 이주 → 옌볜 자치구","하와이 노동자 파견 → 미국 서부 이주","국권 피탈 → 한인촌 형성 → 중앙아시아 강제 이주"],e:"광복 후 일부가 남아 재일 동포 사회 형성."},
+{l:2,s:7,t:"mc",q:"미주 한인 활동을 순서대로 바르게 나열한 것은?",o:["하와이 노동자 파견 → 대한인 국민회 조직 → 재미 한족 연합 위원회 결성","대한인 국민회 조직 → 하와이 노동자 파견 → 재미 한족 연합 위원회 결성","재미 한족 연합 위원회 결성 → 대한인 국민회 조직 → 하와이 노동자 파견","하와이 노동자 파견 → 재미 한족 연합 위원회 결성 → 대한인 국민회 조직"],e:"1902 → 1910 → 1941."},
+{l:2,s:7,t:"mc",q:"카레이스키에 대한 설명으로 옳은 것은?",o:["소련에 의해 중앙아시아로 강제 이주되어 정착한 한국인","일본으로 강제 동원된 한국인","하와이로 이주한 한국인 노동자","만주국 수립 후 이주한 한국인","광복 후 미국으로 입양된 한국인"],e:"후손은 고려인."},
+
+/* ========== 상 ========== */
+{l:3,s:1,t:"mc",q:"다음 자료가 보여 주는 시기에 볼 수 있는 모습으로 가장 적절한 것은?",d:"• 인천에 사는 김○○은 사는 곳의 청소 상태가 나빠 위생에 방해가 된다는 이유로 경찰 관헌에게 태형을 맞았다.\n• 경성에 사는 이○○은 공용 우물에서 마음대로 물을 떠다 먹은 일 등이 발각되어 태형을 맞았다.\n― 『매일신보』",o:["제복을 입고 칼을 찬 교원","도 평의회에 참석하는 의원","애국반 반상회에 참석하는 주민","신사 참배에 동원되는 학생","조선일보 창간호를 읽는 시민"],e:"태형 = 1910년대 무단 통치(조선 태형령). 도 평의회·조선일보는 1920년대, 애국반·신사 참배는 1930년대 이후."},
+{l:3,s:1,t:"mc",q:"(가) 시기에 볼 수 있는 모습으로 가장 적절한 것은?",d:"교사: 이 범죄인 명부에는 일제가 한국인에게 태형을 내린 사실이 기록되어 있어요. 일제는 헌병 경찰 제도를 시행하던 (가) 시기에 헌병이 한국인에게 태형을 가할 수 있게 하였습니다.\n[명부] 죄명: 보안법 위반 / 형벌: 태 90대 / 관청: 예산 헌병 분대",o:["제복을 입고 칼을 찬 교원","도병마사에서 회의하는 관리","영릉가 전투에 참전하는 독립군","5·10 총선거에서 투표하는 여성","프로 야구 출범 행사를 시청하는 학생"],e:"기출(2026학년도 6월 모평) — 헌병 경찰제 = 1910년대."},
+{l:3,s:1,t:"mc",q:"다음 상황이 나타난 시기에 있었던 사실로 옳은 것은?",d:"갑: 두 한국인이 싸웠다는 이유로 순사에게 붙잡혀 맞았다는군. 한국인에게만 차별적으로 태형을 집행하다니.\n을: 회사령에 따라 회사 설립 허가를 받으러 총독부에 갔던 한국인도 결국 허가를 못 받았다네.",o:["헌병 경찰제가 실시되었다.","균역법이 제정되었다.","도병마사가 설치되었다.","홍범 14조가 반포되었다.","삼청 교육대가 운영되었다."],e:"기출(2025학년도 6월 모평) — 태형 + 회사령(허가제) = 1910년대."},
+{l:3,s:1,t:"mc",q:"다음 법령에 대한 설명으로 옳은 것은?",d:"제1조 경찰서장 또는 그 직무를 취급하는 자는 그 관할 구역 안에서 일어난 다음 각호의 범죄를 즉결할 수 있다.\n1. 구류 또는 과료형에 해당하는 죄 …\n― 『조선 총독부 관보』, 1912",o:["헌병 경찰제와 함께 한국인을 재판 없이 처벌하는 데 이용되었다.","3·1 운동 이후 제정되었다.","사회주의 운동을 막으려고 만들었다.","전시 인적 자원 동원을 위한 법이다.","문화 정치 시기 신문 검열의 근거였다."],e:"범죄 즉결례(1912)."},
+{l:3,s:1,t:"mc",q:"1910년대 일제의 통치에 대한 설명으로 옳은 것을 고른 것은?",d:"ㄱ. 조선 총독은 일본 내각의 통제를 받지 않았다.\nㄴ. 중추원은 한국인이 선출한 입법 기관이었다.\nㄷ. 각 도의 헌병 대장이 지방 경찰권을 장악하였다.\nㄹ. 보통학교 수업 연한을 6년으로 늘렸다.",o:["ㄱ, ㄷ","ㄱ, ㄴ","ㄴ, ㄷ","ㄴ, ㄹ","ㄷ, ㄹ"],e:"ㄴ 중추원은 친일파 자문 기구, ㄹ 1910년대는 4년(6년은 문화 정치)."},
+/* 상 02 */
+{l:3,s:2,t:"mc",q:"다음 자료가 반박하는 '문화 정치'의 내용으로 가장 적절한 것은?",d:"1918년에서 1920년 사이 경찰 인원과 경찰 예산이 각각 3배 정도로 늘어났다. 일제는 1군 1경찰서, 1면 1주재소 제도를 확립하였다.",o:["헌병 경찰제를 보통 경찰제로 바꾸어 통제를 완화하겠다.","문관도 총독으로 임명할 수 있다.","보통학교 교육 연한을 늘리겠다.","도 평의회를 설치하겠다.","신문 발간을 허용하겠다."],e:"보통 경찰제로 바꿨지만 경찰력은 오히려 크게 강화됨."},
+{l:3,s:2,t:"mc",q:"다음 자료를 통해 알 수 있는 사실로 가장 적절한 것은?",d:"친일파 이완용이 죽은 뒤 그의 행적을 비판하는 사설이 실리자, 일제가 이 기사를 삭제하였다. (『동아일보』, 1926)",o:["문화 정치 시기 언론 허용은 제한적이었고 검열이 강화되었다.","문화 정치 시기 언론 검열이 완전히 폐지되었다.","1910년대 한국인 신문이 많이 발간되었다.","민족 말살 통치 시기 신문이 폐간되었다.","일제가 친일파 비판을 장려하였다."],e:"1926년 = 문화 정치. 기사 삭제·압수·정간."},
+{l:3,s:2,t:"mc",q:"(가) 통치 시기에 있었던 사실로 옳은 것은?",d:"일본 수상은 한국에서의 무단 통치를 폐지하고 (가)을/를 시행하겠다고 발표하였습니다. … 일본은 헌병 경찰제를 폐지하고 대신 보통 경찰제를 시행하겠다고 합니다. 하지만 여전히 한국인들은 자신이 한국인임을 드러낼 때마다 총을 맞고 고문을 당하겠지요.\n― 필라델피아에서, 서재필",o:["치안 유지법이 제정되었다.","홍경래의 난이 일어났다.","독서삼품과가 실시되었다.","YH 무역 사건이 발생하였다.","국가 재건 최고 회의가 설치되었다."],e:"기출(2023학년도 수능) — (가) = 문화 정치, 치안 유지법(1925)."},
+{l:3,s:2,t:"mc",q:"문화 정치 시기 사실로 옳은 것을 고른 것은?",d:"ㄱ. 보통 경찰제 실시\nㄴ. 조선 태형령 제정\nㄷ. 치안 유지법 시행\nㄹ. 창씨개명 강요",o:["ㄱ, ㄷ","ㄱ, ㄴ","ㄴ, ㄷ","ㄴ, ㄹ","ㄷ, ㄹ"],e:"ㄴ 1912년, ㄹ 민족 말살 통치."},
+{l:3,s:2,t:"mc",q:"문화 정치에서 바뀐 제도와 그 실상의 연결로 옳은 것은?",d:"(가) 문관도 총독 가능 (나) 부·면 협의회 민선 또는 관선 (다) 조선 교육령 개정",o:["(가) – 실제 문관 총독은 한 명도 없었다.","(나) – 모든 한국인이 지방 자치에 참여하였다.","(다) – 한국인 취학률이 일본인보다 높아졌다.","(가) – 문관 총독이 정책을 주도하였다.","(다) – 대학 설립이 금지되었다."],e:"참여 한국인 수 제한, 취학률 저조, 대학 설립은 가능해짐."},
+{l:3,s:2,t:"mc",q:"'문화 정치'가 기만적이라고 평가받는 이유로 옳지 않은 것은?",o:["태형 제도를 오히려 강화하였기 때문","경찰 관서·인원·비용을 크게 늘렸기 때문","치안 유지법으로 독립운동을 탄압했기 때문","도 평의회가 의결권 없는 자문 기구였기 때문","실제 문관 총독이 임명되지 않았기 때문"],e:"태형은 문화 정치 때 폐지됨."},
+/* 상 03 */
+{l:3,s:3,t:"mc",q:"밑줄 친 '이 시기'에 볼 수 있는 모습으로 가장 적절한 것은?",d:"이 사진은 일제가 탑골 공원의 문을 뜯어내는 장면이다. 일제는 중일 전쟁을 일으키고 침략 전쟁을 확대하던 이 시기에 금속으로 만든 문과 현판, 울타리 등도 가져가 군수 물자로 활용하였다. 또한 애국반 같은 조직을 활용해 금속류 공출을 실시하였다.",o:["신사 참배에 동원되는 학생","비변사에서 회의하는 관리","홍경래의 난에 참여하는 농민","13도 창의군을 이끄는 의병장","전태일 분신 사건을 취재하는 기자"],e:"기출(2025학년도 수능) — 중일 전쟁 이후 = 민족 말살 통치."},
+{l:3,s:3,t:"mc",q:"(가)에 들어갈 내용으로 가장 적절한 것은?",d:"[온라인 게시판] 중일 전쟁 이후 국가 총동원법이 시행된 시기에 있었던 사실을 조사해 올려 주세요.\n– 한국인이 군수 공장 등에 강제 동원되었어요.\n– 식량이나 금속류가 공출되었어요.\n– (가)",o:["신사 참배가 강요되었어요.","조선 태형령이 제정되었어요.","별기군이 창설되었어요.","비변사가 설치되었어요.","관민 공동회에서 헌의 6조가 결의되었어요."],e:"기출(2025학년도 9월 모평) — 조선 태형령은 1912년이라 함정!"},
+{l:3,s:3,t:"mc",q:"밑줄 친 '법령'이 시행된 시기에 있었던 사실로 옳은 것은?",d:"교사: 중일 전쟁을 일으킨 일제가 전쟁에 필요한 자원을 효율적으로 조달하려고 공포한 법령의 일부입니다.\n제4조 정부는 전시에 국가 총동원상 필요할 경우 칙령이 정하는 바에 따라 제국 신민을 징용하여 총동원 업무에 종사시킬 수 있다.",o:["황국 신민 서사 암송이 강요되었다.","반민족 행위 특별 조사 위원회가 설치되었다.","제주 4·3 사건이 일어났다.","쌍성총관부가 회복되었다.","호포제가 실시되었다."],e:"기출(2024학년도 수능) — 국가 총동원법(1938)."},
+{l:3,s:3,t:"mc",q:"민족 말살 통치 시기의 사실로 옳은 것을 고른 것은?",d:"ㄱ. 소학교를 국민학교로 개편\nㄴ. 헌병 경찰제 실시\nㄷ. 한국어 신문 폐간\nㄹ. 회사령 공포",o:["ㄱ, ㄷ","ㄱ, ㄴ","ㄴ, ㄷ","ㄴ, ㄹ","ㄷ, ㄹ"],e:"ㄴ, ㄹ은 1910년대."},
+{l:3,s:3,t:"mc",q:"다음 법령 조항과 관련된 일제의 정책 중 '물적 자원' 수탈에 해당하는 것은?",d:"제1조 국가 총동원이란 전시에 국방 목적을 달성하기 위해 국가의 전력을 가장 유효하게 발휘하도록 인적 및 물적 자원을 운용하는 것이다.",o:["금속 제품 공출","국민 징용령","징병제","여자 정신 근로령","학도 지원병 제도"],e:"나머지는 모두 인적 자원(사람) 동원."},
+{l:3,s:3,t:"mc",q:"다음 중 시기가 가장 늦은 것은?",o:["징병제 실시","국가 총동원법 제정","국민 징용령 시행","소학교를 국민학교로 개편","한국어 신문 폐간"],e:"총동원법 1938, 징용령 1939, 신문 폐간 1940, 국민학교 1941, 징병제 1944."},
+{l:3,s:3,t:"mc",q:"민족 말살 통치를 한 문장으로 가장 잘 설명한 것은?",o:["황국 신민화로 한국인의 민족 정체성을 없애고 전쟁에 동원하려 하였다.","헌병을 앞세워 강압적으로 통치하였다.","친일 세력을 키워 민족을 분열시키려 하였다.","토지 소유권을 정리해 재정을 확보하려 하였다.","쌀을 늘려 일본 식량 문제를 해결하려 하였다."],e:"무단 통치(1910s) / 문화 정치(1920s) / 민족 말살 통치(1930s~) 성격 구분."},
+/* 상 04 */
+{l:3,s:4,t:"mc",q:"다음 자료와 관련된 사업의 결과로 옳은 것은?",d:"• 1910년대에 조선 총독부가 거둔 토지세가 계속 늘어났다.\n• 1909년에 비해 1915년에 일본인 지주의 수, 소유 면적, 투자액이 크게 늘었다.",o:["지주의 소유권이 절대적 권리로 인정되어 일본인 대지주가 성장하였다.","농민의 관습적 경작권이 보장되었다.","회사 설립이 신고제로 바뀌었다.","수리 조합비가 소작농에게 전가되었다.","소작 기간이 3~7년으로 정해졌다."],e:"토지 조사 사업(1910~1918)."},
+{l:3,s:4,t:"mc",q:"토지 조사 사업의 '명분'과 '실제'를 잘못 연결한 것은?",o:["명분: 공정한 지세 부담 – 실제: 농민의 세금 부담 감소","명분: 근대적 토지 소유권 확립 – 실제: 신고하지 않은 토지 소유 인정 X","명분: 공정한 지세 부담 – 실제: 총독부 지세 수입 증가","명분: 근대적 소유권 – 실제: 관습적 경작권 부정","명분: 근대적 소유권 – 실제: 식민 지배의 경제적 기초 확립"],e:"실제로는 지세 수입을 늘리는 게 목적이었고 농민 처지는 나빠졌어."},
+{l:3,s:4,t:"mc",q:"1910년대 일제의 경제 정책으로 옳은 것을 고른 것은?",d:"ㄱ. 토지 조사령 공포\nㄴ. 회사 설립을 신고제로 변경\nㄷ. 조선 식산 은행 설립\nㄹ. 신은행령 발표",o:["ㄱ, ㄷ","ㄱ, ㄴ","ㄴ, ㄷ","ㄴ, ㄹ","ㄷ, ㄹ"],e:"ㄴ 1920년, ㄹ 1928년."},
+{l:3,s:4,t:"mc",q:"토지 조사 사업으로 땅을 잃은 농민이 겪은 일로 옳지 않은 것은?",o:["조선 농지령으로 소작료가 크게 낮아졌다.","지주와 임대 계약을 맺고 소작농이 되었다.","고율의 소작료를 부담하였다.","화전민이 되기도 하였다.","만주·연해주·일본 등지로 이주하였다."],e:"조선 농지령은 1934년이고, 높은 소작료는 그대로 유지됐어."},
+/* 상 05 */
+{l:3,s:5,t:"mc",q:"다음 자료와 관련된 일제의 정책으로 가장 적절한 것은?",d:"올해는 수확이 많지만 … 몇 년간 흉년으로 받지 못했던 소작료, 수리 조합비, 비료 대금 등을 한꺼번에 받아 내겠다고 한다. 그런데 쌀값이 떨어져서 … 빚 독촉에 견디지 못해 수확량 전부를 채권자에게 넘겨주는 일이 벌어진다.\n― 『동아일보』, 1930",o:["산미 증식 계획","토지 조사 사업","병참 기지화 정책","남면북양 정책","국가 총동원법"],e:"수리 조합비·비료 대금 = 산미 증식 계획(1920~1934)의 부담."},
+{l:3,s:5,t:"mc",q:"다음 자료를 바르게 해석한 것은?",d:"[1920~1930년 쌀 생산량과 일본 이출량]\n쌀 생산량은 해마다 오르내리며 크게 늘지 않았지만, 일본으로의 이출량은 꾸준히 늘어났다.",o:["한국 안에 남는 쌀이 줄어 한국인의 식량 사정이 나빠졌다.","산미 증식 계획이 목표를 초과 달성하였다.","한국인의 쌀 소비량이 늘어났다.","일본으로 보내는 쌀이 점차 줄었다.","농민들이 쌀을 팔아 부를 쌓았다."],e:"생산 정체 + 이출 증가 → 식량 사정 악화. 부를 쌓은 건 토지 회사·지주."},
+{l:3,s:5,t:"mc",q:"다음 사건을 일어난 순서대로 바르게 나열한 것은?",d:"(가) 회사령 공포 (나) 회사령 폐지 (다) 한일 간 관세 폐지 (라) 신은행령 발표",o:["(가) → (나) → (다) → (라)","(가) → (다) → (나) → (라)","(나) → (가) → (라) → (다)","(가) → (라) → (나) → (다)","(다) → (가) → (나) → (라)"],e:"1910 → 1920 → 1923 → 1928."},
+{l:3,s:5,t:"mc",q:"1920년대 일제의 경제 정책이 한국 경제에 끼친 영향으로 옳지 않은 것은?",o:["한국인 기업이 일본 기업보다 자본금이 커졌다.","일본 대기업이 한국에 본격적으로 진출하였다.","일본 상품의 가격 경쟁력이 강해졌다.","은행 합병으로 일본 자본의 지배가 강화되었다.","한국인 농민의 생활이 악화되었다."],e:"한일 회사 간 자본금·생산액 차이가 컸어(한국인 기업은 소규모)."},
+/* 상 06 */
+{l:3,s:6,t:"mc",q:"다음 법령에 대한 설명으로 옳은 것은?",d:"제7조 소작지의 임대차 기간은 3년 이상으로 해야 한다. 단, 영년작물 재배를 목적으로 하는 임대차는 7년 이상으로 해야 한다.\n제19조 임대인(지주)은 임차인(소작농)이 배신행위를 하지 않는 한 임대차의 갱신을 거절할 수 없다.",o:["지주의 자의적인 소작권 이동을 막으려 했지만 높은 소작료는 유지되었다.","소작료를 크게 낮추어 농민 생활이 나아졌다.","1912년 토지 조사 사업과 함께 공포되었다.","소작농에게 토지 소유권을 주었다.","회사 설립을 신고제로 바꾸었다."],e:"조선 농지령(1934) — 농민 회유·통제 목적."},
+{l:3,s:6,t:"mc",q:"다음 지역별 공업 분포가 나타난 원인과 결과를 바르게 연결한 것은?",d:"• 황해도·평안도·함경도: 중화학 공업 발달\n• 서울·경기: 소비재 공업 발달",o:["병참 기지화 정책 – 산업별 불균형 심화","산미 증식 계획 – 쌀 이출량 증가","회사령 공포 – 한국인 기업 성장","토지 조사 사업 – 지세 수입 증가","관세 폐지 – 한국 상품 경쟁력 강화"],e:"북부 발전소·중화학 투자 → 불균형."},
+{l:3,s:6,t:"mc",q:"통치 시기와 경제 정책의 연결로 옳은 것은?",o:["1910년대 – 토지 조사 사업, 회사령 공포","1910년대 – 산미 증식 계획, 회사령 폐지","1920년대 – 병참 기지화, 국가 총동원법","1930년대 이후 – 토지 조사 사업, 회사령 공포","1920년대 – 남면북양, 농촌 진흥 운동"],e:"1910s 토지 조사·회사령 / 1920s 산미 증식·회사령 폐지·관세 폐지·신은행령 / 1930s~ 병참 기지화·남면북양·농촌 진흥·총동원."},
+{l:3,s:6,t:"mc",q:"다음 사실을 시기 순으로 바르게 나열한 것은?",d:"(가) 토지 조사령 공포 (나) 산미 증식 계획 시작 (다) 농촌 진흥 운동 시작 (라) 국가 총동원법 제정",o:["(가) → (나) → (다) → (라)","(가) → (다) → (나) → (라)","(나) → (가) → (다) → (라)","(가) → (나) → (라) → (다)","(나) → (다) → (가) → (라)"],e:"1912 → 1920 → 1932 → 1938."},
+{l:3,s:6,t:"mc",q:"농촌 진흥 운동과 조선 농지령의 공통점으로 가장 적절한 것은?",o:["농민을 회유·통제하려 했지만 농촌의 실질적 문제는 해결하지 못하였다.","농민 단체가 주도하였다.","1910년대에 실시되었다.","소작료를 없앴다.","쌀 이출을 늘리는 것이 직접 목적이었다."],e:"대공황 이후 농촌 경제 악화 → 회유·통제."},
+{l:3,s:6,t:"mc",q:"국가 총동원법 이후 전시 수탈로 옳은 것을 고른 것은?",d:"ㄱ. 금속 제품 공출\nㄴ. 토지 소유권 신고\nㄷ. 식량 배급제\nㄹ. 회사 설립 허가제",o:["ㄱ, ㄷ","ㄱ, ㄴ","ㄴ, ㄷ","ㄴ, ㄹ","ㄷ, ㄹ"],e:"ㄴ 토지 조사 사업, ㄹ 회사령(1910년대)."},
+/* 상 07 */
+{l:3,s:7,t:"mc",q:"다음 자료의 '이 지역'에 대한 설명으로 옳은 것은?",d:"국권 피탈 이후 민족 운동가들이 이 지역으로 이주하여 한인촌을 만들고 독립운동 단체를 조직하였다. 그러나 중일 전쟁 직후 소련은 이 지역의 한국인들을 강제로 이주시켰다.",o:["강제 이주된 한국인은 카레이스키로 불렸고, 그 후손을 고려인이라 한다.","1902년 사탕수수 농장 노동자가 처음 이주하였다.","관동 대지진 때 많은 한국인이 희생되었다.","1952년 조선족 자치구가 지정되었다.","대한인 국민회가 조직되었다."],e:"연해주 → 중앙아시아 강제 이주."},
+{l:3,s:7,t:"mc",q:"미주 한인 활동으로 옳은 것을 모두 고른 것은?",d:"ㄱ. 하와이 사탕수수 농장 노동자 파견\nㄴ. 대한인 국민회 조직\nㄷ. 만주국 수립 후 강제 이주\nㄹ. 재미 한족 연합 위원회의 외교 독립 활동",o:["ㄱ, ㄴ, ㄹ","ㄱ, ㄴ, ㄷ","ㄱ, ㄷ, ㄹ","ㄴ, ㄷ, ㄹ","ㄱ, ㄴ, ㄷ, ㄹ"],e:"ㄷ은 만주."},
+{l:3,s:7,t:"mc",q:"국외 이주 동포에 대한 설명으로 옳지 않은 것은?",o:["재미 한족 연합 위원회는 만주에서 결성되었다.","만주 한인들은 간도 참변·미쓰야 협정 등 탄압을 겪었다.","1930년대 이후 강제 동원으로 일본에 끌려간 한국인이 늘었다.","광복 이후 미국으로의 입양·유학이 활발해졌다.","재미 한족 연합 위원회는 한인 국방 경위대를 조직하였다."],e:"재미 한족 연합 위원회는 미주(1941)."}
+];
+
+/* ---------- 상태 ---------- */
+const WKEY="hanguksa_wrong_v1";
+function loadW(){try{return new Set(JSON.parse(localStorage.getItem(WKEY)||"[]"))}catch(e){return new Set()}}
+function saveW(){try{localStorage.setItem(WKEY,JSON.stringify([...wrong]))}catch(e){}}
+let wrong=loadW();
+let pick={lv:0,sec:0,num:20};
+let run=null;
+
+/* ---------- 탭 ---------- */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  ["concept","quiz","wrong"].forEach(id=>document.getElementById(id).classList.toggle("hidden",id!==b.dataset.tab));
+  if(b.dataset.tab==="wrong")renderWrong();
+  window.scrollTo({top:0});
+});
+
+/* ---------- 빈칸 가리기 ---------- */
+const hideBtn=document.getElementById("hideBtn");
+hideBtn.onclick=()=>{
+  const on=document.getElementById("concept").classList.toggle("hideans");
+  hideBtn.classList.toggle("on",on);
+  hideBtn.textContent=on?"빈칸 보이기":"빈칸 가리기";
+  document.querySelectorAll("#concept b.ans").forEach(x=>x.classList.remove("show"));
+};
+document.getElementById("concept").addEventListener("click",e=>{
+  const t=e.target.closest("b.ans");
+  if(t&&document.getElementById("concept").classList.contains("hideans"))t.classList.toggle("show");
+});
+
+/* ---------- 설정 ---------- */
+function chips(el,items,key){
+  el.innerHTML="";
+  items.forEach(([v,label])=>{
+    const b=document.createElement("button");b.textContent=label;
+    b.classList.toggle("on",pick[key]===v);
+    b.onclick=()=>{pick[key]=v;chips(el,items,key);updAvail()};
+    el.appendChild(b);
+  });
+}
+function pool(){return Q.map((q,i)=>({...q,id:i})).filter(q=>(!pick.lv||q.l===pick.lv)&&(!pick.sec||q.s===pick.sec))}
+function updAvail(){
+  const n=pool().length;
+  const c=[1,2,3].map(l=>Q.filter(q=>q.l===l&&(!pick.sec||q.s===pick.sec)).length);
+  document.getElementById("avail").textContent=`조건에 맞는 문제 ${n}개 (하 ${c[0]} / 중 ${c[1]} / 상 ${c[2]})`;
+}
+chips(document.getElementById("lvChips"),[[0,"전체"],[1,"하"],[2,"중"],[3,"상"]],"lv");
+chips(document.getElementById("secChips"),[[0,"전체"],...SEC.slice(1).map((s,i)=>[i+1,`0${i+1} ${s}`])],"sec");
+chips(document.getElementById("numChips"),[[10,"10문제"],[20,"20문제"],[30,"30문제"],[999,"전부"]],"num");
+updAvail();
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+document.getElementById("startBtn").onclick=()=>{
+  const p=shuffle(pool()).slice(0,pick.num);
+  if(!p.length)return;
+  start(p);
+};
+function start(list){
+  // 하 → 중 → 상 순서로 정렬해서 쉬운 것부터
+  list.sort((a,b)=>a.l-b.l);
+  run={list,i:0,score:0,miss:[]};
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("play").classList.remove("hidden");
+  showQ();
+}
+
+/* ---------- 문제 화면 ---------- */
+function norm(s){return String(s).replace(/[\s·.,()（）'‘’"\-]/g,"").toLowerCase()}
+function ansText(q){if(q.t==="ox")return q.a?"O":"X";if(q.t==="bl")return q.a[0];return q.o[0]}
+const NUMS=["①","②","③","④","⑤"];
+
+function showQ(){
+  const q=run.list[run.i],P=document.getElementById("play");
+  const total=run.list.length;
+  let h=`<div class="meta"><span>${run.i+1} / ${total}</span><span>맞힌 문제 ${run.score}</span></div>
+  <div class="prog"><i style="width:${run.i/total*100}%"></i></div>
+  <div class="qtext"><span class="lv lv${q.l}">${LV[q.l]}</span><span style="font-size:13px;color:var(--ink2)">${SEC[q.s]}</span>\n${q.q}</div>`;
+  if(q.d)h+=`<div class="data">${q.d}</div>`;
+  if(q.t==="ox"){
+    h+=`<div class="opts ox"><button data-v="1">O</button><button data-v="0">X</button></div>`;
+  }else if(q.t==="mc"){
+    q._ord=shuffle(q.o.map((_,i)=>i));
+    h+=`<div class="opts">${q._ord.map((oi,k)=>`<button data-v="${oi}">${NUMS[k]} ${q.o[oi]}</button>`).join("")}</div>`;
+  }else{
+    h+=`<div class="blank"><input id="bin" placeholder="정답 입력" autocomplete="off"><button id="bgo">확인</button></div>`;
+  }
+  h+=`<div id="fb"></div>`;
+  P.innerHTML=h;
+  if(q.t==="bl"){
+    const inp=document.getElementById("bin");
+    const go=()=>{if(inp.disabled)return;judge(q,q.a.some(a=>norm(a)===norm(inp.value)),inp.value);inp.disabled=true;document.getElementById("bgo").disabled=true};
+    document.getElementById("bgo").onclick=go;
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter")go()});
+    inp.focus({preventScroll:true});
+  }else{
+    P.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{
+      const v=+b.dataset.v;
+      const ok=q.t==="ox"?(v===1)===q.a:v===0;
+      P.querySelectorAll(".opts button").forEach(x=>{
+        x.disabled=true;
+        const xv=+x.dataset.v;
+        const isRight=q.t==="ox"?(xv===1)===q.a:xv===0;
+        if(isRight)x.classList.add("right");
+      });
+      if(!ok)b.classList.add("wrong");
+      judge(q,ok);
+    });
+  }
+}
+function judge(q,ok,typed){
+  if(ok){run.score++;wrong.delete(q.id)}else{run.miss.push(q);wrong.add(q.id)}
+  saveW();
+  const last=run.i===run.list.length-1;
+  document.getElementById("fb").innerHTML=`<div class="fb"><div class="r ${ok?"ok":"no"}">${ok?"정답!":"오답"}</div>
+  ${ok?"":`<div>정답: <strong>${ansText(q)}</strong>${typed!==undefined&&typed!==""?` (내 답: ${typed})`:""}</div>`}
+  <div>${q.e||""}</div></div>
+  <button class="big next" id="nx">${last?"결과 보기":"다음 문제"}</button>`;
+  const nx=document.getElementById("nx");nx.focus({preventScroll:true});
+  nx.onclick=()=>{if(last)result();else{run.i++;showQ();window.scrollTo({top:0})}};
+}
+function result(){
+  const P=document.getElementById("play"),n=run.list.length;
+  let h=`<p class="lab">결과</p><div class="score">${run.score} / ${n}</div>
+  <p class="cnt">정답률 ${Math.round(run.score/n*100)}%</p>`;
+  if(run.miss.length){
+    h+=`<p class="lab">틀린 문제</p><ul class="wlist">${run.miss.map(q=>`<li><span class="lv lv${q.l}">${LV[q.l]}</span>${q.q.replace(/\n/g," ")}<br><span class="a">정답: ${ansText(q)}</span></li>`).join("")}</ul>`;
+  }
+  h+=`<div class="row">${run.miss.length?`<button class="big" id="retryW">틀린 것만 다시</button>`:""}<button class="big sub" id="back">처음으로</button></div>`;
+  P.innerHTML=h;
+  if(run.miss.length)document.getElementById("retryW").onclick=()=>start(shuffle(run.miss.slice()));
+  document.getElementById("back").onclick=backSetup;
+  window.scrollTo({top:0});
+}
+function backSetup(){
+  document.getElementById("play").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+  updAvail();
+}
+
+/* ---------- 오답 노트 ---------- */
+function renderWrong(){
+  const W=document.getElementById("wrongPanel");
+  const list=[...wrong].filter(i=>Q[i]).map(i=>({...Q[i],id:i})).sort((a,b)=>a.s-b.s||a.l-b.l);
+  if(!list.length){W.innerHTML=`<h2>오답 노트</h2><p class="empty">틀린 문제가 여기 모여요. 다시 맞히면 자동으로 빠져요.</p>`;return}
+  W.innerHTML=`<h2>오답 노트 (${list.length})</h2>
+  <div class="row" style="margin:0 0 6px"><button class="big" id="wPlay">오답만 풀기</button><button class="big sub" id="wClr">비우기</button></div>
+  <ul class="wlist">${list.map(q=>`<li><span class="lv lv${q.l}">${LV[q.l]}</span><span style="font-size:12px;color:var(--ink2)">${SEC[q.s]}</span><br>${q.q.replace(/\n/g," ")}<br><span class="a">정답: ${ansText(q)}</span><br><span style="color:var(--ink2)">${q.e||""}</span></li>`).join("")}</ul>`;
+  document.getElementById("wPlay").onclick=()=>{
+    document.querySelector('nav button[data-tab="quiz"]').click();
+    start(shuffle(list));
+  };
+  document.getElementById("wClr").onclick=()=>{if(confirm("오답 노트를 비울까요?")){wrong.clear();saveW();renderWrong()}};
+}
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+</script>
+</body>
+</html>
