@@ -541,7 +541,7 @@ details.unit[open] summary{border-bottom:1px solid var(--line)}
     <div class="chips" id="lvChips"></div>
     <p class="lab">유형</p>
     <div class="chips" id="tyChips"></div>
-    <p class="lab">단원</p>
+    <p class="lab">단원 (여러 개 선택 가능)</p>
     <div class="chips" id="secChips"></div>
     <p class="lab">문항 수</p>
     <div class="chips" id="numChips"></div>
@@ -1027,7 +1027,7 @@ const WKEY="hanguksa_wrong_v1";
 function loadW(){try{return new Set(JSON.parse(localStorage.getItem(WKEY)||"[]"))}catch(e){return new Set()}}
 function saveW(){try{localStorage.setItem(WKEY,JSON.stringify([...wrong]))}catch(e){}}
 let wrong=loadW();
-let pick={lv:0,sec:0,num:20,ty:0};
+let pick={lv:0,secs:new Set(),num:20,ty:0};
 let run=null;
 
 /* ---------- 탭 ---------- */
@@ -1061,15 +1061,29 @@ function chips(el,items,key){
     el.appendChild(b);
   });
 }
-function pool(){return Q.map((q,i)=>({...q,id:i})).filter(q=>(!pick.lv||q.l===pick.lv)&&(!pick.sec||q.s===pick.sec)&&(!pick.ty||(pick.ty===2?q.x:!q.x)))}
+function pool(){return Q.map((q,i)=>({...q,id:i})).filter(q=>(!pick.lv||q.l===pick.lv)&&(!pick.secs.size||pick.secs.has(q.s))&&(!pick.ty||(pick.ty===2?q.x:!q.x)))}
 function updAvail(){
   const n=pool().length;
-  const c=[1,2,3].map(l=>Q.filter(q=>q.l===l&&(!pick.sec||q.s===pick.sec)&&(!pick.ty||(pick.ty===2?q.x:!q.x))).length);
+  const c=[1,2,3].map(l=>Q.filter(q=>q.l===l&&(!pick.secs.size||pick.secs.has(q.s))&&(!pick.ty||(pick.ty===2?q.x:!q.x))).length);
   document.getElementById("avail").textContent=`조건에 맞는 문제 ${n}개 (하 ${c[0]} / 중 ${c[1]} / 상 ${c[2]})`;
 }
 chips(document.getElementById("lvChips"),[[0,"전체"],[1,"하"],[2,"중"],[3,"상"]],"lv");
 chips(document.getElementById("tyChips"),[[0,"전체"],[1,"기본"],[2,"학교 시험형"]],"ty");
-chips(document.getElementById("secChips"),[[0,"전체"],...SEC.slice(1).map((s,i)=>[i+1,`${String(i+1).padStart(2,"0")} ${s}`])],"sec");
+function secChips(){
+  const el=document.getElementById("secChips");el.innerHTML="";
+  const items=[[0,"전체"],...SEC.slice(1).map((s,i)=>[i+1,`${String(i+1).padStart(2,"0")} ${s}`])];
+  items.forEach(([v,label])=>{
+    const b=document.createElement("button");b.textContent=label;
+    b.classList.toggle("on",v===0?pick.secs.size===0:pick.secs.has(v));
+    b.onclick=()=>{
+      if(v===0)pick.secs.clear();
+      else{pick.secs.has(v)?pick.secs.delete(v):pick.secs.add(v);if(pick.secs.size===SEC.length-1)pick.secs.clear();}
+      secChips();updAvail();
+    };
+    el.appendChild(b);
+  });
+}
+secChips();
 chips(document.getElementById("numChips"),[[10,"10문제"],[20,"20문제"],[30,"30문제"],[999,"전부"]],"num");
 updAvail();
 
